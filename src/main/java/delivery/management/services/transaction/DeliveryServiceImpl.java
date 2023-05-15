@@ -160,8 +160,11 @@ public class DeliveryServiceImpl implements DeliveryService {
             delivery.setDeliveryDate(request.getDeliveryDate());
             delivery.setPaymentMode(request.getPaymentMode());
             delivery.setTotalQuantity(totalQuantity);
+            delivery.setTotalWeight(totalWeight);
+            delivery.setCustomerAddress(request.getCustomerAddress());
 
-            delivery.setProductItemsList(productItemsList);
+
+        delivery.setProductItemsList(productItemsList);
 
             deliveryRepository.save(delivery);
 

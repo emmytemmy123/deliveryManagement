@@ -7,7 +7,6 @@ import lombok.Data;
 @Data
 public class DriverResponse extends BaseDto {
 
-
     private String name;
     private String email;
     private String phone;
@@ -20,5 +19,7 @@ public class DriverResponse extends BaseDto {
     private String username;
     private String driverLicence;
 
+
+    private DriverHelperResponse vehicle;
 
 }

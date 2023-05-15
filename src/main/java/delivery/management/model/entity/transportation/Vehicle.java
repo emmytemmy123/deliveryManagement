@@ -27,6 +27,8 @@ public class Vehicle extends BaseEntity {
     private VehicleCategory vehicleCategory;
 
 
+
+
     public Vehicle(){}
 
 }

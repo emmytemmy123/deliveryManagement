@@ -3,6 +3,7 @@ package delivery.management.services.user;
 import delivery.management.exception.RecordNotFoundException;
 import delivery.management.mapper.Mapper;
 import delivery.management.model.dto.enums.AppStatus;
+import delivery.management.model.dto.enums.MessageHelpers;
 import delivery.management.model.dto.request.userRequest.CustomerRequest;
 import delivery.management.model.dto.request.userRequest.changeCustomerPasswordRequest;
 import delivery.management.model.dto.request.userRequest.loginCustomerRequest;
@@ -71,7 +72,7 @@ public class CustomerServiceImpl implements CustomerService  {
             }
             customerRepository.save(getCustomerFromRequest(request));
             return new ApiResponse<>(AppStatus.SUCCESS.label, HttpStatus.OK.value(),
-                    "Record added Successfully");
+                    MessageHelpers.CREATE_SUCCESSFUL.code);
         }
 
 
@@ -169,7 +170,7 @@ public class CustomerServiceImpl implements CustomerService  {
 
         customerRepository.save(customer);
         return new ApiResponse<String>(AppStatus.SUCCESS.label, HttpStatus.OK.value(),
-                    "Record Updated Successfully");
+                MessageHelpers.UPDATE_SUCCESSFUL.code);
 
         }
 

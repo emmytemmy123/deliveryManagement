@@ -8,12 +8,11 @@ import java.time.LocalDateTime;
 @Data
 public class PaymentHelper {
 
-    private String orderNo;
-    private String orderBy;
-    private Double amount;
-    private Double amountDue;
-    private String orderStatus;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private String name;
+    private String email;
+    private String phone;
+    private String photo;
+    private String gender;
+    private String address;
 
 }

@@ -1,8 +1,7 @@
 package delivery.management.model.dto.response.transactionResponse;
 
-
 import delivery.management.model.dto.BaseDto;
-import delivery.management.model.entity.products.ProductItems;
+import delivery.management.model.dto.response.productsResponse.ProductResponse;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -16,12 +15,15 @@ public class DeliveryResponse extends BaseDto {
      private Double totalAmountDue;
      private String deliveryStatus;
      private LocalDateTime deliveryDate;
+     private String customerAddress;
      private Integer serialNo;
-     private String deliveryType;
+     private String paymentMode;
      private Integer totalQuantity;
-     private String postedBy;
-     private String deliverBy;
+     private Integer totalWeight;
 
-     private List<ProductItems> productItemsItemList;
+     private PostedByResponse sender;
+     private DeliverByResponse driver;
+     private DispathToResponse customer;
+     private List<ProductResponse> productItemsList;
 
 }

@@ -24,9 +24,6 @@ public class Payment extends BaseEntity {
     private String tranReference;
     private Integer serialNo;
 
-//    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    @JoinColumn(name = "customerId", insertable = true, updatable = true)
-//    private Customer customer;
 
     @ManyToOne
     @JoinColumn(name = "deliveryId", insertable = true, updatable = true)

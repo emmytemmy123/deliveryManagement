@@ -5,7 +5,7 @@ import delivery.management.model.dto.BaseDto;
 import lombok.Data;
 
 @Data
-public class ProductResponse extends BaseDto {
+public class ProductResponse {
 
      private String name;
      private Integer quantity;
@@ -13,7 +13,6 @@ public class ProductResponse extends BaseDto {
      private String colour;
      private Integer weight;
      private String photo;
-     private Double deliveryCost;
      private String description;
 
 

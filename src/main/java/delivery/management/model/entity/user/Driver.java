@@ -20,7 +20,7 @@ public class Driver extends BaseUser {
     private String driverLicence;
 
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "vehicleId", insertable = true, updatable = true)
     private Vehicle vehicle;
 

@@ -8,9 +8,12 @@ import lombok.Data;
 @Data
 public class VehicleResponse  extends BaseDto {
 
-    private String name;
+    private String brand;
     private String model;
     private String colour;
     private String plateNo;
+    private String driver;
+
+
 
 }

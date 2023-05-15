@@ -33,7 +33,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 //    @Query("select st from Payment st where st.order.customer.createdBy.uuid=:recordId")
 //    List<Payment> findPaymentBySalesPerson(@Param("recordId") UUID uuid);
 
-    @Query("select st from Payment st where st.customer.uuid=:recordId")
+    @Query("select st from Payment st where st.delivery.customer.uuid=:recordId")
     List<Payment> findPaymentByCustomer(@Param("recordId") UUID uuid);
 
     @Query( value = "select * from payment where month(date_created) =:month and year(date_created) =:year order by id Desc limit 1", nativeQuery = true)

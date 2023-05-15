@@ -1,6 +1,7 @@
 package delivery.management.model.entity.transaction;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import delivery.management.model.entity.BaseEntity;
 import delivery.management.model.entity.products.ProductItems;
 import delivery.management.model.entity.user.Customer;
@@ -25,14 +26,15 @@ public class Delivery extends BaseEntity {
     private Double totalDeliveryAmount;
     private Double totalAmountDue;
     private String deliveryStatus;
-    private LocalDateTime deliveryDate;
+    private String deliveryDate;
+    private String customerAddress;
     private Integer serialNo;
     private String paymentMode;
     private Integer totalQuantity;
+    private Integer totalWeight;
     private String postedBy;
     private String deliverBy;
     private String dispatchTo;
-
 
 
     @ManyToOne

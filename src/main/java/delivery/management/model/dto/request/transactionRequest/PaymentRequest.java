@@ -11,9 +11,6 @@ import java.util.UUID;
 @Data
 public class PaymentRequest  {
 
-       @NotNull(message = MessageUtil.INVALID_NAME)
-       @NotEmpty(message = MessageUtil.INVALID_NAME)
-       private String paymentMode;
 
        @NotNull(message = MessageUtil.INVALID_NAME)
        @Min(value=50, message = MessageUtil.INVALID_NAME)

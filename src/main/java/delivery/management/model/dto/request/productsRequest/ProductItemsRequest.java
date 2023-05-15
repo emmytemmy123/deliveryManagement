@@ -40,7 +40,7 @@ public class ProductItemsRequest {
 
      //@NotNull(message = MessageUtil.INVALID_NAME)
 //     @NotEmpty(message = MessageUtil.INVALID_NAME)
-     private String sendBy;
+//     private String sendBy;
 
 
 

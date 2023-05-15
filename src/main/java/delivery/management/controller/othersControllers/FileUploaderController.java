@@ -38,7 +38,6 @@ public class FileUploaderController {
 
     @ApiOperation(value = "Endpoint for downloading file")
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
-
     @GetMapping("/file/download")
     public StreamingResponseBody downloadPhoto(@RequestParam("filename") String name, @RequestParam(value="display", defaultValue = "attachment")String display,
                                            HttpServletResponse response) throws IOException {

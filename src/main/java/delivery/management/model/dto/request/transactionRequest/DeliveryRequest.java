@@ -15,11 +15,16 @@ import static delivery.management.utills.MessageUtil.INVALID_NAME;
 @Data
 public class DeliveryRequest {
 
-        private LocalDateTime deliveryDate;
+
+        private String deliveryDate;
 
         @NotNull(message = INVALID_NAME)
         @NotEmpty(message = INVALID_NAME)
         private String paymentMode;
+
+        @NotNull(message = INVALID_NAME)
+        @NotEmpty(message = INVALID_NAME)
+        private String customerAddress;
 
         @NotNull(message = MessageUtil.INVALID_NAME)
         private UUID sendById;
