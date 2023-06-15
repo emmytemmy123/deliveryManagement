@@ -2,28 +2,25 @@ package delivery.management.services.user;
 
 
 import delivery.management.common.UserConstant;
+import delivery.management.dto.ApiResponse;
 import delivery.management.exception.RecordNotFoundException;
 import delivery.management.filter.JwtFilter;
 import delivery.management.mapper.Mapper;
 import delivery.management.model.dto.enums.AppStatus;
-import delivery.management.model.dto.request.othersRequest.AuthRequest;
-import delivery.management.model.dto.request.userRequest.UserRequest;
-import delivery.management.model.dto.request.userRequest.changeUserPasswordRequest;
-import delivery.management.model.dto.request.userRequest.loginUserRequest;
-import delivery.management.model.dto.response.othersResponse.ApiResponse;
-import delivery.management.model.dto.response.userResponse.UserResponse;
-import delivery.management.model.entity.user.AppUser;
+import delivery.management.model.dto.request.userRequest.UsersRequest;
+import delivery.management.model.dto.request.userRequest.changeUsersPasswordRequest;
+import delivery.management.model.dto.request.userRequest.loginUsersRequest;
+import delivery.management.model.dto.response.userResponse.UsersResponse;
+import delivery.management.model.entity.user.Users;
 import delivery.management.repo.user.UserRepository;
+import delivery.management.repo.user.UsersRepository;
+import delivery.management.utills.EmailUtils;
 import delivery.management.utills.JwtUtil;
 import delivery.management.utills.MessageUtil;
-import delivery.management.utills.EmailUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -34,31 +31,13 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl  implements UserService {
-    private final UserRepository userRepository;
+    private final UsersRepository usersRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final JwtFilter jwtFilter;
     private final EmailUtils emailUtils;
 
 
-
-    @Override
-    /**
-     * @Authenticating username and password
-     * @Validating if username and password is Authenticated otherwise return record not found
-     * Generate token to access the Api
-     */
-    public String authenticate(AuthRequest authRequest) {
-
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
-
-        if (!authentication.isAuthenticated())
-            throw new UsernameNotFoundException("invalid user request !");
-
-        return jwtUtil.generateToken(authRequest.getUsername(), authRequest.getPassword());
-
-    }
 
 
     @Override
@@ -67,22 +46,20 @@ public class UserServiceImpl  implements UserService {
      * @Validate if the List of users is empty otherwise return record not found
      * @return the list of users and a Success Message*
      * * */
-    public ApiResponse<List<UserResponse>> getListOfUsers(int page, int size) {
-            List<AppUser> userList = userRepository.findAll(PageRequest.of(page, size)).toList();
+    public ApiResponse<List<UsersResponse>> getListOfUsers(int page, int size) {
+            List<Users> userList = usersRepository.findAll(PageRequest.of(page, size)).toList();
             if (userList.isEmpty())
                 throw new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND);
 
-            return new ApiResponse(AppStatus.SUCCESS.label, HttpStatus.OK.value(),
-                    Mapper.convertList(userList, UserResponse.class));
+            return new ApiResponse(AppStatus.SUCCESS.label, Mapper.convertList(userList, UsersResponse.class));
         }
 
 
     /**
      * Set and get the users parameters
      */
-    private AppUser getUserFromRequest(UserRequest request) {
-
-        AppUser user = new AppUser();
+    private Users getUserFromRequest(UsersRequest request) {
+        Users user = new Users();
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setAddress(request.getAddress());
@@ -93,6 +70,7 @@ public class UserServiceImpl  implements UserService {
         user.setPhone(request.getPhone());
         user.setUsername(request.getUsername());
         user.setPhoto(request.getPhoto());
+
         user.setRoles(UserConstant.DEFAULT_ROLE);//USER
 //        String encryptedPwd = passwordEncoder.encode(user.getPassword());
 //        user.setPassword(encryptedPwd);
@@ -109,18 +87,18 @@ public class UserServiceImpl  implements UserService {
      * Create user definition and save
      * @return success message
      * * */
-    public ApiResponse<String> addUsers(UserRequest request) {
-            Optional<AppUser> user = validateUserByEmailId(request.getEmail());
+    public ApiResponse<String> addUsers(UsersRequest request) {
+            Optional<Users> user = validateUserByEmailId(request.getEmail());
 
             if (!user.isEmpty()) {
-                return new ApiResponse(AppStatus.FAILED.label, HttpStatus.EXPECTATION_FAILED.value(),
-                        "Email Already Exist");
+                return new ApiResponse("Email Already Exist", AppStatus.FAILED.label,
+                        HttpStatus.EXPECTATION_FAILED.value());
             }
 
-        userRepository.save(getUserFromRequest(request));
+        usersRepository.save(getUserFromRequest(request));
 
-            return new ApiResponse(AppStatus.SUCCESS.label, HttpStatus.OK.value(),
-                    "Record Added successfully");
+            return new ApiResponse("Record Added successfully", AppStatus.SUCCESS.label,
+                    HttpStatus.OK.value());
         }
 
 
@@ -131,25 +109,27 @@ public class UserServiceImpl  implements UserService {
      * Create the user definition and get the user Optional
      * @return the list of users and a Success Message* *
      * * */
-    public ApiResponse<UserResponse> getUsersById( UUID userId) {
-
-            Optional<AppUser> userOptional = userRepository.findByUuid(userId);
+    public ApiResponse<UsersResponse> getUsersById( UUID userId) {
+//        if (jwtFilter.isAdmin()) {
+            Optional<Users> userOptional = usersRepository.findByUuid(userId);
             if (userOptional.isEmpty())
                 throw new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND);
 
-            AppUser appUser = userOptional.get();
-            return new ApiResponse<UserResponse>(AppStatus.SUCCESS.label, HttpStatus.OK.value(),
-                    Mapper.convertObject(appUser, UserResponse.class));
+        Users appUser = userOptional.get();
+            return new ApiResponse<UsersResponse>(AppStatus.SUCCESS.label,
+                    Mapper.convertObject(appUser, UsersResponse.class));
         }
-
+//        return new ApiResponse(AppStatus.REJECT.label, HttpStatus.EXPECTATION_FAILED.value(),
+//                "You are not Authorized");
+//    }
 
     /**
      * @validating userOptional by uuid*
      * @Validate if the List of user is empty otherwise return record not found
      * @return userOptional* *
      * * */
-    private AppUser validateUser(UUID uuid) {
-        Optional<AppUser> userOptional = userRepository.findByUuid(uuid);
+    private Users validateUser(UUID uuid) {
+        Optional<Users> userOptional = usersRepository.findByUuid(uuid);
         if (userOptional.isEmpty())
             throw new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND);
         return userOptional.get();
@@ -160,8 +140,8 @@ public class UserServiceImpl  implements UserService {
      * @Validate if existingUserOptional is empty otherwise return Duplicate Record
      * return existingUserOptional
      * * */
-    private Optional<AppUser> validateUserByEmailId(String email) {
-        Optional<AppUser> existingUserOptional = userRepository.findByEmailId(email);
+    private Optional<Users> validateUserByEmailId(String email) {
+        Optional<Users> existingUserOptional = usersRepository.findByEmailId(email);
         return existingUserOptional;
     }
 
@@ -181,9 +161,9 @@ public class UserServiceImpl  implements UserService {
      * Create the user definition and update
      * @return a Success Message
      * * */
-    public ApiResponse<String> updateUser(UUID userId, UserRequest request) {
-
-            AppUser user = validateUser(userId);
+    public ApiResponse<String> updateUsers(UUID userId, UsersRequest request) {
+//        if (jwtFilter.isAdmin()) {
+        Users user = validateUser(userId);
             user.setName(request.getName());
             user.setEmail(request.getEmail());
             user.setAddress(request.getAddress());
@@ -194,13 +174,13 @@ public class UserServiceImpl  implements UserService {
             user.setPhone(request.getPhone());
             user.setUsername(request.getUsername());
             user.setPhoto(request.getPhoto());
-//            user.setRoles(request.getRoles());
 
-            userRepository.save(user);
-            return new ApiResponse<>(AppStatus.SUCCESS.label, HttpStatus.OK.value(),
-                    "Record Updated Successfully");
+            usersRepository.save(user);
+            return new ApiResponse<>(AppStatus.SUCCESS.label, "Record Updated Successfully");
         }
-
+//        return new ApiResponse(AppStatus.REJECT.label, HttpStatus.EXPECTATION_FAILED.value(),
+//                "You are not Authorized");
+//    }
 
     @Override
     /**
@@ -209,12 +189,11 @@ public class UserServiceImpl  implements UserService {
      * @Delete user
      * @return a Success Message
      * * */
-    public ApiResponse<String> deleteUser(UUID userId) {
+    public ApiResponse<String> deleteUsers(UUID userId) {
 //        if (jwtFilter.isAdmin()) {
-            AppUser user = validateUser(userId);
-            userRepository.delete(user);
-            return new ApiResponse(AppStatus.SUCCESS.label, HttpStatus.OK.value(),
-                    "Record Deleted successfully");
+            Users user = validateUser(userId);
+            usersRepository.delete(user);
+            return new ApiResponse(AppStatus.SUCCESS.label, "Record Deleted successfully");
         }
 //        return new ApiResponse(AppStatus.REJECT.label, HttpStatus.EXPECTATION_FAILED.value(),
 //                "You are not Authorized");
@@ -226,21 +205,24 @@ public class UserServiceImpl  implements UserService {
      * @Validate user password and change password
      * @Save the new password and return a Success Message
      */
-    public ApiResponse<String> resetUserPassword(String email, changeUserPasswordRequest request) {
-            AppUser users = userRepository.findByEmail(email);
+    public ApiResponse<String> resetUsersPassword(String email, changeUsersPasswordRequest request) {
+//        if (jwtFilter.isAdmin()) {
+            Users users = usersRepository.findByEmail(email);
 
             if (users.getPassword().equals(request.getOldPassword())) {
                 users.setPassword(request.getNewPassword());
 
-                userRepository.save(users);
+                usersRepository.save(users);
 
-                return new ApiResponse(AppStatus.SUCCESS.label, HttpStatus.OK.value(),
-                        "Password Changed successfully");
+                return new ApiResponse("Password Changed successfully", AppStatus.SUCCESS.label,
+                        HttpStatus.OK.value());
             }
-            return new ApiResponse(AppStatus.FAILED.label, HttpStatus.BAD_REQUEST.value(),
-                    "Incorrect Old Password");
+            return new ApiResponse("Incorrect Old Password", AppStatus.FAILED.label,
+                    HttpStatus.BAD_REQUEST.value());
         }
-
+//        return new ApiResponse(AppStatus.REJECT.label, HttpStatus.EXPECTATION_FAILED.value(),
+//                "You are not Authorized");
+//    }
 
     @Override
     /**
@@ -248,14 +230,14 @@ public class UserServiceImpl  implements UserService {
      * @Getiing email and password of user and sending it to User`s Email
      * @Return a Success Message
      */
-    public ApiResponse<String> forgotUserPassword(String email) throws MessagingException {
+    public ApiResponse<String> forgotUsersPassword(String email) throws MessagingException {
 
-        AppUser users = userRepository.findByEmail(email);
+        Users users = usersRepository.findByEmail(email);
 
         emailUtils.forgotMail(users.getEmail(), "Your Booking Credentials by Hotel Management System", users.getPassword());
 
-        return new ApiResponse(AppStatus.SUCCESS.label, HttpStatus.OK.value(),
-                "Check your email for credentials");
+        return new ApiResponse("Check your email for credentials", AppStatus.SUCCESS.label,
+                HttpStatus.OK.value());
 
     }
 
@@ -267,18 +249,18 @@ public class UserServiceImpl  implements UserService {
      * @Return a Success Message if email and password is correct
      * @Return a Failed Message if email and password is Incorrect
      */
-    public ApiResponse<String> loginUser(String email, loginUserRequest request) {
-        AppUser users = userRepository.findByEmail(email);
+    public ApiResponse<String> loginUsers(String email, loginUsersRequest request) {
+        Users users = usersRepository.findByEmail(email);
 
         if (users.getEmail().equals(request.getEmail())
                 && users.getPassword().equals(request.getPassword())) {
 
-            return new ApiResponse(AppStatus.SUCCESS.label, HttpStatus.OK.value(),
-                    "User login successfully");
+            return new ApiResponse("User login successfully", AppStatus.SUCCESS.label,
+                    HttpStatus.OK.value());
         }
 
-        return new ApiResponse(AppStatus.FAILED.label, HttpStatus.BAD_REQUEST.value(),
-                "Incorrect Email or Password");
+        return new ApiResponse("Incorrect Email or Password", AppStatus.FAILED.label,
+                HttpStatus.BAD_REQUEST.value());
     }
 
 
@@ -294,8 +276,8 @@ public class UserServiceImpl  implements UserService {
         return Collections.emptyList();
     }
 
-    private AppUser getLoggedInUser(Principal principal) {
-        return userRepository.findByUsername(principal.getName()).get();
+    private Users getLoggedInUser(Principal principal) {
+        return usersRepository.findByUsername(principal.getName()).get();
     }
 
 

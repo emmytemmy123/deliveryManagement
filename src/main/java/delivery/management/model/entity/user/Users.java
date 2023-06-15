@@ -12,17 +12,19 @@ import javax.persistence.*;
 @AllArgsConstructor
 @EntityListeners(BaseListener.class)
 @Entity
-@Table(name = "customer")
-public class Customer extends BaseUser {
+@Table(name = "users")
+public class Users extends BaseUser {
 
-    private String nin;
-
+   private String driverLicense;
+   private String usersCategory;
+   private String roles;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "createdById", updatable = true)
-    private AppUser createdBy;
+    @JoinColumn(name = "usersTypeId", updatable = true)
+    private UsersType usersType;
 
-    public Customer(){}
+    public Users(){
+    }
 
 
 }
