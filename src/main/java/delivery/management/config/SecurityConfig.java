@@ -5,6 +5,7 @@ import delivery.management.filter.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -31,7 +32,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService);
     }
 
-
     @Bean
     public PasswordEncoder passwordEncoder() {return NoOpPasswordEncoder.getInstance();
     }
@@ -45,14 +45,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
+        http.cors().disable();
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers( "/authenticate","/users/seller/add", "/users/add", "users/customer/add", "/forgotUserPassword", "/swagger-ui.html").permitAll()
+                .antMatchers( "/appUserauthenticate","/appUserauthenticates", "/users/add",  "/forgotUserPassword", "/swagger-ui.html").permitAll()
                 .antMatchers("/v2/api-docs").permitAll()
                 .antMatchers("/swagger-resources/**").permitAll()
                 .antMatchers("/configuration/security").permitAll()
                 .antMatchers("/swagger-ui/*").permitAll()
+                .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                 .antMatchers("/webjars/**").permitAll()
                 .anyRequest().authenticated()
                 .and().exceptionHandling().and()

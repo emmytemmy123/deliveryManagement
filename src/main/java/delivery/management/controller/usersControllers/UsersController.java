@@ -1,28 +1,27 @@
 package delivery.management.controller.usersControllers;
 
+import delivery.management.dto.ApiResponse;
+import delivery.management.model.dto.request.othersRequest.AuthRequest;
+import delivery.management.model.dto.request.othersRequest.AuthRequest2;
 import delivery.management.model.dto.request.userRequest.*;
-import delivery.management.model.dto.response.othersResponse.ApiResponse;
-import delivery.management.model.dto.response.userResponse.CustomerResponse;
-import delivery.management.model.dto.response.userResponse.DriverResponse;
-import delivery.management.model.dto.response.userResponse.UserResponse;
-import delivery.management.services.user.DriverService;
+import delivery.management.model.dto.response.UserTypeResponse;
+import delivery.management.model.dto.response.othersResponse.AuthResponse;
+import delivery.management.services.user.UserTypeService;
+import delivery.management.services.user.UsersService;
 import io.swagger.annotations.ApiOperation;
-import delivery.management.model.dto.response.userResponse.SenderResponse;
+import delivery.management.model.dto.response.userResponse.UsersResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import delivery.management.services.user.CustomerService;
-import delivery.management.services.user.SenderService;
-import delivery.management.services.user.UserService;
 import delivery.management.utills.EndpointParam;
 
 import javax.mail.MessagingException;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
 import static delivery.management.utills.EndPoints.UsersEndPoints.*;
+import static delivery.management.utills.EndpointParam.*;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping(users)
@@ -30,149 +29,117 @@ import static delivery.management.utills.EndPoints.UsersEndPoints.*;
 @RequiredArgsConstructor
 public class UsersController  {
 
-    private final CustomerService customerService;
-    private final SenderService senderService;
-    private final UserService userService;
-    private final DriverService driverService;
- 
+    private final UsersService usersService;
+    private final UserTypeService userTypeService;
+
 
 
                                         //FIND_LISTS_OF_USERS
-    @GetMapping(FIND_CUSTOMER)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR')")
-    @ApiOperation(value = "Endpoint for retrieving lists of customer", response = CustomerResponse.class, responseContainer = "List")
-    public ApiResponse<List<CustomerResponse>> getListOfCustomer(@RequestParam(value= EndpointParam.PAGE, defaultValue = EndpointParam.PAGE_DEFAULT) int page,
-                                                                 @RequestParam(value= EndpointParam.SIZE,defaultValue= EndpointParam.SIZE_DEFAULT) int size) {
-        return customerService.getListOfCustomer(page,size);
-    }
 
-    @GetMapping(FIND_SENDER)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR')")
-    @ApiOperation(value = "Endpoint for retrieving lists of sender", response = SenderResponse.class, responseContainer = "List")
-    public ApiResponse<List<SenderResponse>> getListOfSender(@RequestParam(value= EndpointParam.PAGE, defaultValue = EndpointParam.PAGE_DEFAULT) int page,
-                                                             @RequestParam(value= EndpointParam.SIZE,defaultValue= EndpointParam.SIZE_DEFAULT) int size) {
-        return senderService.getListOfSender(page,size);
+    @GetMapping(FIND_USERS)
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR')")
+    @ApiOperation(value = "Endpoint for retrieving lists of users", response = UsersResponse.class, responseContainer = "List")
+    public delivery.management.dto.ApiResponse<List<UsersResponse>> getListOfUsers(@RequestParam(value= PAGE, defaultValue = PAGE_DEFAULT) int page,
+                                                                                   @RequestParam(value= SIZE,defaultValue= SIZE_DEFAULT) int size) {
+        return usersService.getListOfUsers(page,size);
     }
 
 
-    @GetMapping(FIND_USER)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR')")
-    @ApiOperation(value = "Endpoint for retrieving lists of user", response = UserResponse.class, responseContainer = "List")
-    public ApiResponse<List<UserResponse>> getListOfUsers(@RequestParam(value= EndpointParam.PAGE, defaultValue = EndpointParam.PAGE_DEFAULT) int page,
-                                                          @RequestParam(value= EndpointParam.SIZE,defaultValue= EndpointParam.SIZE_DEFAULT) int size) {
-        return userService.getListOfUsers(page,size);
+    @GetMapping(FIND_USERTYPE)
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR')")
+    @ApiOperation(value = "Endpoint for retrieving lists of userType", response = UserTypeResponse.class, responseContainer = "List")
+    public delivery.management.dto.ApiResponse<List<UserTypeResponse>> getListOfUserType(@RequestParam(value= PAGE, defaultValue = PAGE_DEFAULT) int page,
+                                                                                         @RequestParam(value= SIZE,defaultValue= EndpointParam.SIZE_DEFAULT) int size) {
+        return userTypeService.getListOfUsersCategory(page,size);
     }
 
-    @GetMapping(FIND_DRIVER)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR')")
-    @ApiOperation(value = "Endpoint for retrieving lists of driver", response = DriverResponse.class, responseContainer = "List")
-    public ApiResponse<List<DriverResponse>> getListOfDriver(@RequestParam(value= EndpointParam.PAGE, defaultValue = EndpointParam.PAGE_DEFAULT) int page,
-                                                          @RequestParam(value= EndpointParam.SIZE,defaultValue= EndpointParam.SIZE_DEFAULT) int size) {
-        return driverService.getListOfDriver(page,size);
-    }
 
 
                                     //ADD_USERS
-    @PostMapping(ADD_CUSTOMER)
-    @ApiOperation(value = "Endpoint for adding new customer to database", response = String.class)
-    public ApiResponse<String> addCustomer(@Valid @RequestBody CustomerRequest request) throws IOException {
-        return customerService.addCustomer(request);
-    }
 
-    @PostMapping(ADD_SENDER)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') ")
-    @ApiOperation(value = "Endpoint for adding new sender to database", response = String.class)
-    public ApiResponse<String> addSender(@Valid @RequestBody SenderRequest request) {
-        return senderService.addSender(request);
-    }
-
-    @PostMapping(ADD_USER)
+    @PostMapping(ADD_USERS)
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN') ")
     @ApiOperation(value = "Endpoint for adding new user to database", response = String.class)
-    public ApiResponse<String> addUsers(@Valid @RequestBody UserRequest request) {
-        return userService.addUsers(request);
+    public delivery.management.dto.ApiResponse<String> addUsers(@Valid @RequestBody UsersRequest request) {
+        return usersService.addUsers(request);
     }
 
-    @PostMapping(ADD_DRIVER)
-    @ApiOperation(value = "Endpoint for adding new driver to database", response = String.class)
-    public ApiResponse<String> addDriver(@Valid @RequestBody DriverRequest request) throws IOException {
-        return driverService.addDriver(request);
+    @PostMapping(ADD_USERTYPE)
+    @ApiOperation(value = "Endpoint for adding new userType to database", response = String.class)
+    public delivery.management.dto.ApiResponse<String> addUserType(@Valid @RequestBody UserTypeRequest request) {
+
+        return userTypeService.addUsersCategory(request);
     }
+
+
 
 
                                          //FIND_USERS_BY_ID
-    @GetMapping(FIND_CUSTOMER_BY_ID)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
-    @ApiOperation(value = "Endpoint for fetching customer by id from database", response = CustomerResponse.class)
-    public ApiResponse<CustomerResponse> getCustomerById(@PathVariable(value = "id") UUID customer_id) {
-        return customerService.getCustomerById(customer_id);
+
+    @GetMapping(FIND_USERS_BY_ID)
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
+    @ApiOperation(value = "Endpoint for fetching sender by id from database", response = UsersResponse.class)
+    public delivery.management.dto.ApiResponse<UsersResponse> getUsersById(@PathVariable(value = "id") UUID usersId) {
+        return usersService.getUsersById(usersId);
     }
 
-    @GetMapping(FIND_SENDER_BY_ID)
+    @GetMapping(FIND_USERTYPE_BY_ID)
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
-    @ApiOperation(value = "Endpoint for fetching sender by id from database", response = SenderResponse.class)
-    public ApiResponse<SenderResponse> getSenderById(@PathVariable(value = "id") UUID senderId) {
-        return senderService.getSenderById(senderId);
+    @ApiOperation(value = "Endpoint for fetching userType by id from database", response = UserTypeResponse.class)
+    public delivery.management.dto.ApiResponse<UserTypeResponse> getUserTypeById(@PathVariable(value = "id") UUID userTypeId) {
+        return userTypeService.getUsersTypeById(userTypeId);
     }
 
-    @GetMapping(FIND_USER_BY_ID)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
-    @ApiOperation(value = "Endpoint for fetching user by id from database", response = UserResponse.class)
-    public ApiResponse<UserResponse> getUsersById(@PathVariable(value = "id") UUID user_id) {
-        return userService.getUsersById(user_id);
+                                    //FIND USERTYPE BY NAME
+//    @GetMapping(FIND_USERTYPE_BY_NAME)
+////    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
+//    @ApiOperation(value = "Endpoint for fetching userType by name from database", response = UserTypeResponse.class)
+//    public delivery.management.dto.ApiResponse<UserTypeResponse> getUserTypeByName(@RequestParam String name) {
+//        return userTypeService.getUsersTypeByName(name);
+//    }
+
+    @GetMapping(FIND_USERTYPE_BY_NAME)
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') or hasAuthority('ROLE_USER') ")
+    @ApiOperation(value = "Endpoint for retrieving lists of usertype by Name", response = UserTypeResponse.class, responseContainer = "List")
+    public delivery.management.dto.ApiResponse<UserTypeResponse> searchListOfUsersTypeByName(@RequestParam(value=PAGE, defaultValue = PAGE_DEFAULT) int page,
+                                                                                             @RequestParam(value=SIZE,defaultValue=SIZE_DEFAULT) int size,
+                                                                                             @RequestParam String name ) {
+        return userTypeService.getUsersTypeByName(name);
     }
 
-    @GetMapping(FIND_DRIVER_BY_ID)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
-    @ApiOperation(value = "Endpoint for fetching driver by id from database", response = DriverResponse.class)
-    public ApiResponse<DriverResponse> getDriverById(@PathVariable(value = "id") UUID driverId) {
-        return driverService.getDriverById(driverId);
-    }
 
 
                                         //UPDATE_USERS
-    @PutMapping(UPDATE_CUSTOMER)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') or hasAuthority('ROLE_USER') ")
-    @ApiOperation(value = "Endpoint for updating customer by id from database", response = String.class)
-    public ApiResponse<String> updateCustomer(@PathVariable(value = "id") UUID customerId,
-                                              @RequestBody CustomerRequest request) {
-        return customerService.updateCustomer(customerId, request);
-    }
 
-    @PutMapping(UPDATE_SENDER)
+    @PutMapping(UPDATE_USERS)
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
-    @ApiOperation(value = "Endpoint for updating sender by id from database", response = String.class)
-    public ApiResponse<String> updateSender(@PathVariable(value = "id") UUID senderId,
-                                              @RequestBody SenderRequest request) {
-        return senderService.updateSender(senderId, request);
+    @ApiOperation(value = "Endpoint for updating users by id from database", response = String.class)
+    public delivery.management.dto.ApiResponse<String> updateUsers(@PathVariable(value = "id") UUID usersId,
+                                                                   @RequestBody UsersRequest request) {
+        return usersService.updateUsers(usersId, request);
     }
 
-    @PutMapping(UPDATE_USER)
+
+    @PutMapping(UPDATE_USERTYPE)
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') or hasAuthority('ROLE_USER') ")
-    @ApiOperation(value = "Endpoint for updating user by id from database", response = String.class)
-    public ApiResponse<String> updateUsers(@PathVariable(value = "id") UUID userId,
-                                           @RequestBody UserRequest request) {
-        return userService.updateUser(userId, request);
+    @ApiOperation(value = "Endpoint for updating userType by id from database", response = String.class)
+    public delivery.management.dto.ApiResponse<String> updateUserType(@PathVariable(value = "id") UUID userId,
+                                                                      @RequestBody UserTypeRequest request) {
+        return userTypeService.updateUsersCategory(userId, request);
     }
 
-    @PutMapping(UPDATE_DRIVER)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') or hasAuthority('ROLE_USER') ")
-    @ApiOperation(value = "Endpoint for updating driver by id from database", response = String.class)
-    public ApiResponse<String> updateDriver(@PathVariable(value = "id") UUID driverId,
-                                           @RequestBody DriverRequest request) {
-        return driverService.updateDriver(driverId, request);
-    }
 
 
 
                                             //DELETE_USERS
 
-    @DeleteMapping(DELETE_USER)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') ")
-    @ApiOperation(value = "Endpoint for deleting user by id from database", response = String.class)
-    public ApiResponse<String> deleteUser(@PathVariable(value = "id") UUID user_id) {
-        return userService.deleteUser(user_id);
-    }
 
+    @DeleteMapping(DELETE_USERTYPE)
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') ")
+    @ApiOperation(value = "Endpoint for deleting userType by id from database", response = String.class)
+    public delivery.management.dto.ApiResponse<String> deleteUserType(@PathVariable(value = "id") UUID user_id) {
+        return userTypeService.deleteUsersCategory(user_id);
+    }
 
 
                                 //Change Password
@@ -180,30 +147,20 @@ public class UsersController  {
     @PutMapping(RESET_USER_PASSWORD)
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') or hasAuthority('ROLE_USER') ")
     @ApiOperation(value = "Endpoint for resetting users password from database", response = String.class)
-    public ApiResponse<String> resetPassword(@RequestBody changeUserPasswordRequest request, String email) {
-        return userService.resetUserPassword(email, request);
+    public delivery.management.dto.ApiResponse<String> resetUserPassword(@RequestBody changeUserPasswordRequest request, String email) {
+        return usersService.resetUsersPassword(email, request);
     }
 
-    @PutMapping(RESET_CUSTOMER_PASSWORD)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') or hasAuthority('ROLE_USER') ")
-    @ApiOperation(value = "Endpoint for updating customer password from database", response = String.class)
-    public ApiResponse<String> changeCustomerPassword(@RequestBody changeCustomerPasswordRequest request, String email) {
-        return customerService.resetCustomerPassword(email, request);
-    }
 
-    @PutMapping(RESET_SENDER_PASSWORD)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') or hasAuthority('ROLE_USER') ")
-    @ApiOperation(value = "Endpoint for resetting sender password from database", response = String.class)
-    public ApiResponse<String> resetPassword(@RequestBody changeSenderPasswordRequest request, String email) {
-        return senderService.resetSenderPassword(email, request);
-    }
 
-    @PutMapping(RESET_DRIVER_PASSWORD)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') or hasAuthority('ROLE_USER') ")
-    @ApiOperation(value = "Endpoint for resetting driver password from database", response = String.class)
-    public ApiResponse<String> resetDriverPassword(@RequestBody changeDriverPasswordRequest request, String email) {
-        return driverService.resetDriverPassword(email, request);
-    }
+//    @PutMapping(RESET_USERS_PASSWORD)
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') or hasAuthority('ROLE_USER') ")
+//    @ApiOperation(value = "Endpoint for resetting sender password from database", response = String.class)
+//    public ApiResponse<String> resetUsersPassword(@RequestBody String pasword, String email) {
+//        return usersService.resetUsersPassword(email, pasword);
+//    }
+
+
 
 
 
@@ -211,61 +168,30 @@ public class UsersController  {
     @GetMapping(FORGOT_USER_PASSWORD)
     @PreAuthorize("hasAuthority('ROLE_USER') ")
     @ApiOperation(value = "Endpoint for getting forgotten users password from database", response = String.class)
-    public ApiResponse<String> forgotUserPassword(String email) throws MessagingException {
-        return userService.forgotUserPassword(email);
+    public delivery.management.dto.ApiResponse<String> forgotUserPassword(String email) throws MessagingException {
+        return usersService.forgotUsersPassword(email);
     }
 
-    @GetMapping(FORGOT_CUSTOMER_PASSWORD)
-    @PreAuthorize(" hasAuthority('ROLE_USER') ")
-    @ApiOperation(value = "Endpoint for resetting customer password from database", response = String.class)
-    public ApiResponse<String> forgotCustomerPassword(String email) throws MessagingException {
-        return customerService.forgotCustomerPassword(email);
-    }
 
-    @GetMapping(FORGOT_SENDER_PASSWORD)
-    @PreAuthorize("hasAuthority('ROLE_USER') ")
-    @ApiOperation(value = "Endpoint for getting forgotten SENDER password from database", response = String.class)
-    public ApiResponse<String> forgotSenderPassword(String email) throws MessagingException {
-        return senderService.forgotSenderPassword(email);
-    }
 
-    @GetMapping(FORGOT_DRIVER_PASSWORD)
-    @PreAuthorize("hasAuthority('ROLE_USER') ")
-    @ApiOperation(value = "Endpoint for getting forgotten DRIVER password from database", response = String.class)
-    public ApiResponse<String> forgotDriverPassword(String email) throws MessagingException {
-        return driverService.forgotDriverPassword(email);
-    }
+//    @GetMapping(FORGOT_USERS_PASSWORD)
+//    @PreAuthorize("hasAuthority('ROLE_USER') ")
+//    @ApiOperation(value = "Endpoint for getting forgotten SENDER password from database", response = String.class)
+//    public ApiResponse<String> forgotUsersPassword(String email) throws MessagingException {
+//        return usersService.forgotUsersPassword(email);
+//    }
 
 
 
                                         //login Users
-    @PostMapping(LOGIN_USER)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER') ")
+
+    @PostMapping(LOGIN_USERS)
+//  @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER') ")
     @ApiOperation(value = "Endpoint to login users to database", response = String.class)
-    public ApiResponse<String> loginUser(@RequestBody loginUserRequest request, String email) {
-        return userService.loginUser(email, request);
+    public ApiResponse<AuthResponse> loginUsers(@RequestBody AuthRequest request ) {
+        return usersService.loginUsers(request);
     }
 
-    @PostMapping(LOGIN_CUSTOMER)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER') ")
-    @ApiOperation(value = "Endpoint to login customer to database", response = String.class)
-    public ApiResponse<String> loginCustomer(@RequestBody loginCustomerRequest request, String email) {
-        return customerService.loginCustomer(email, request);
-    }
-
-    @PostMapping(LOGIN_SENDER)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER') ")
-    @ApiOperation(value = "Endpoint to login SENDER to database", response = String.class)
-    public ApiResponse<String> loginSender(@RequestBody loginSenderRequest request, String email) {
-        return senderService.loginSender(email, request);
-    }
-
-    @PostMapping(LOGIN_DRIVER)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER') ")
-    @ApiOperation(value = "Endpoint to login DRIVER to database", response = String.class)
-    public ApiResponse<String> loginDriver(@RequestBody loginDriverRequest request, String email) {
-        return driverService.loginDriver(email, request);
-    }
 
 
 

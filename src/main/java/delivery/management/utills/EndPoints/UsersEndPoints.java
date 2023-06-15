@@ -17,29 +17,19 @@ public class UsersEndPoints {
     public static final String FORGOT_CUSTOMER_PASSWORD= CUSTOMER+"/forgotCustomerPassword";
 
 
-    public static final String SENDER="/sender";
-    public static final String FIND_SENDER=SENDER+"/list";
-    public static final String ADD_SENDER= SENDER+"/add";
-    public static final String FIND_SENDER_BY_ID= SENDER+"/{id}";
-    public static final String UPDATE_SENDER= SENDER+"/update/{id}";
-    public static final String DELETE_SENDER= SENDER+"/delete/{id}";
-    public static final String LOGIN_SENDER= SENDER+"loginEmployee";
-    public static final String RESET_SENDER_PASSWORD= SENDER+"/resetPassword";
-    public static final String FORGOT_SENDER_PASSWORD= SENDER+"/forgotEmployeePassword";
+    public static final String USERS="";
+    public static final String FIND_USERS=USERS+"/list";
+    public static final String ADD_USERS= USERS+"/add";
+    public static final String FIND_USERS_BY_ID= USERS+"/get/{id}";
+    public static final String UPDATE_USERS= USERS+"/update/{id}";
+    public static final String DELETE_USERS= USERS+"/delete/{id}";
+    public static final String LOGIN_USERS= USERS+"loginUsers";
+    public static final String RESET_USERS_PASSWORD= USERS+"/resetPassword";
+    public static final String FORGOT_USERS_PASSWORD= USERS+"/forgotEmployeePassword";
 
 
-    public static final String DRIVER="/driver";
-    public static final String FIND_DRIVER=DRIVER+"/list";
-    public static final String ADD_DRIVER= DRIVER+"/add";
-    public static final String FIND_DRIVER_BY_ID= DRIVER+"/{id}";
-    public static final String UPDATE_DRIVER= DRIVER+"/update/{id}";
-    public static final String DELETE_DRIVER= DRIVER+"/delete/{id}";
-    public static final String LOGIN_DRIVER= DRIVER+"loginEmployee";
-    public static final String RESET_DRIVER_PASSWORD= DRIVER+"/resetPassword";
-    public static final String FORGOT_DRIVER_PASSWORD= DRIVER+"/forgotEmployeePassword";
 
-
-    public static final String USER="";
+    public static final String USER="appUser";
     public static final String FIND_USER=USER+"/list";
     public static final String ADD_USER= USER+"/add";
     public static final String FIND_USER_BY_ID= USER+"/{id}";
@@ -49,7 +39,23 @@ public class UsersEndPoints {
     public static final String FORGOT_USER_PASSWORD= USER+"/forgotUserPassword";
     public static final String LOGIN_USER= USER+"/loginUser";
     public static final String AUTHENTICATE_USER= USER+"authenticate";
+
+    public static final String AUTHENTICATE_USERS= USER+"authenticates";
+    public static final String AUTHENTICATE_USERES= USER+"authenticating";
+
+
     public static final String GIVE_ACCESS_TO_USER= USER+"/access/{uuid}/{userRole}";
+
+
+    public static final String USERTYPE="userType";
+    public static final String FIND_USERTYPE=USERTYPE+"/list";
+    public static final String ADD_USERTYPE= USERTYPE+"/add";
+    public static final String FIND_USERTYPE_BY_NAME= USERTYPE+"/name";
+    public static final String FIND_USERTYPE_BY_ID= USERTYPE+"/{id}";
+    public static final String UPDATE_USERTYPE= USERTYPE+"/update/{id}";
+    public static final String DELETE_USERTYPE= USERTYPE+"/delete/{id}";
+
+
 
 
     public static final String IMAGE="/image";

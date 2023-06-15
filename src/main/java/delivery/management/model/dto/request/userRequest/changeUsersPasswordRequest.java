@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class changeSenderPasswordRequest {
+public class changeUsersPasswordRequest {
 
     @NotNull(message = MessageUtil.INVALID_PASSWORD)
     @NotEmpty(message = MessageUtil.INVALID_PASSWORD)

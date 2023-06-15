@@ -15,12 +15,16 @@ import javax.persistence.*;
 @Table(name = "product")
 public class ProductItems extends BaseEntity {
 
-    private String name;
+    private String productName;
     private Integer quantity;
     private String model;
     private String colour;
     private Integer weight;
     private String photo;
+    private String receiverAddress;
+    private String receiverName;
+    private String status;
+    private Double amount;
     private String description;
 
 

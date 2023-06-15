@@ -1,5 +1,6 @@
 package delivery.management.model.dto.response.othersResponse;
 
+import delivery.management.model.dto.BaseDto;
 import lombok.Data;
 
 import java.util.HashMap;
@@ -8,7 +9,7 @@ import java.util.Map;
 
 @Data
 //@Builder
-public class ApiResponse<T> {
+public class ApiResponse<T, U extends BaseDto> {
     private String message; //Failed/ Success
     private Integer code;
     private T data;

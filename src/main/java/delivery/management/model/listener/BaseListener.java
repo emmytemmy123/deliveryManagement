@@ -3,13 +3,10 @@ package delivery.management.model.listener;
 import delivery.management.model.entity.document.Document;
 import delivery.management.model.entity.products.ProductItems;
 import delivery.management.model.entity.transaction.Delivery;
-import delivery.management.model.entity.transaction.Payment;
-import delivery.management.model.entity.user.AppUser;
-import delivery.management.model.entity.user.Customer;
-import delivery.management.model.entity.user.Driver;
-import delivery.management.model.entity.user.Sender;
+import delivery.management.model.entity.user.Users;
 import delivery.management.model.entity.transportation.Vehicle;
 import delivery.management.model.entity.transportation.VehicleCategory;
+import delivery.management.model.entity.user.UsersType;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.PrePersist;
@@ -36,24 +33,14 @@ public class BaseListener {
             productItems.setUuid(UUID.randomUUID());
         }
 
-        else if(data instanceof Payment){
-            Payment payment = (Payment) data;
-            payment.setUuid(UUID.randomUUID());
+        else if(data instanceof Users){
+            Users users = (Users) data;
+            users.setUuid(UUID.randomUUID());
         }
 
-        else if(data instanceof Customer){
-            Customer customer = (Customer) data;
-            customer.setUuid(UUID.randomUUID());
-        }
-
-        else if(data instanceof Driver){
-            Driver driver = (Driver) data;
-            driver.setUuid(UUID.randomUUID());
-        }
-
-        else if(data instanceof AppUser){
-            AppUser user = (AppUser) data;
-            user.setUuid(UUID.randomUUID());
+        else if(data instanceof UsersType){
+            UsersType usersType = (UsersType) data;
+            usersType.setUuid(UUID.randomUUID());
         }
 
         else if(data instanceof VehicleCategory){
@@ -66,9 +53,9 @@ public class BaseListener {
             vehicle.setUuid(UUID.randomUUID());
         }
 
-        else if(data instanceof Sender){
-            Sender sender = (Sender) data;
-            sender.setUuid(UUID.randomUUID());
+        else if(data instanceof Users){
+            Users users = (Users) data;
+            users.setUuid(UUID.randomUUID());
         }
 
 

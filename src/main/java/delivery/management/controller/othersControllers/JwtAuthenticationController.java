@@ -1,12 +1,14 @@
 package delivery.management.controller.othersControllers;
 
 
+import delivery.management.dto.ApiResponse;
 import delivery.management.model.dto.request.othersRequest.AuthRequest;
-import delivery.management.repo.user.UserRepository;
+import delivery.management.model.dto.response.othersResponse.AuthResponse;
+import delivery.management.repo.user.UsersRepository;
 import delivery.management.services.others.JwtAuthenticationService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -20,11 +22,8 @@ import static delivery.management.utills.EndPoints.UsersEndPoints.*;
 @RequiredArgsConstructor
 public class JwtAuthenticationController {
 
-    private final UserRepository userRepository;
 
     private final JwtAuthenticationService jwtAuthenticationService;
-
-
 
 
     @PostMapping(AUTHENTICATE_USER)
@@ -33,9 +32,16 @@ public class JwtAuthenticationController {
         return jwtAuthenticationService.authenticateUsernameAndPassword(request);
     }
 
+    @PostMapping(AUTHENTICATE_USERS)
+    @ApiOperation(value = "Endpoint for authenticate Username And Password2 ", response = String.class)
+    public ResponseEntity authenticateUsernameAndPassword2(@Valid @RequestBody AuthRequest request) throws IOException {
+        return jwtAuthenticationService.authenticateUsernameAndPassword2(request);
+    }
+
+
 
     @GetMapping(GIVE_ACCESS_TO_USER)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR')")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR')")
     @ApiOperation(value = "Endpoint for giving access to users")
     public String giveAccessToUser(@PathVariable UUID uuid, @PathVariable String userRole, Principal principal) {
         return jwtAuthenticationService.giveAccessToUser(uuid, userRole,principal);

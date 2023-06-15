@@ -19,6 +19,7 @@ public class Users extends BaseUser {
    private String usersCategory;
    private String roles;
 
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "usersTypeId", updatable = true)
     private UsersType usersType;

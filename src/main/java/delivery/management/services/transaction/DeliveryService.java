@@ -1,6 +1,7 @@
 package delivery.management.services.transaction;
 
 
+import delivery.management.model.dto.BaseDto;
 import delivery.management.model.dto.request.transactionRequest.DeliveryRequest;
 import delivery.management.model.dto.response.othersResponse.ApiResponse;
 import delivery.management.model.dto.response.transactionResponse.DeliveryResponse;
@@ -11,17 +12,17 @@ import java.util.UUID;
 
 public interface DeliveryService {
 
-    ApiResponse<List<DeliveryResponse>> getListOfDelivery(int page, int size);
+    ApiResponse<List<DeliveryResponse>, BaseDto> getListOfDelivery(int page, int size);
 
-    ApiResponse<DeliveryResponse> getDeliveryById(UUID deliveryId);
+    ApiResponse<DeliveryResponse, BaseDto> getDeliveryById(UUID deliveryId);
 
-    ApiResponse<String> addDelivery(DeliveryRequest request);
+    ApiResponse<String, BaseDto> addDelivery(DeliveryRequest request);
 
-    ApiResponse<String> updateDelivery(UUID productItemUuid, DeliveryRequest request);
+    ApiResponse<String, BaseDto> updateDelivery(UUID productItemUuid, DeliveryRequest request);
 
-    ApiResponse<List<DeliveryResponse>> getDeliveryBySender(UUID deliveryUuid);
+    ApiResponse<List<DeliveryResponse>, BaseDto> getDeliveryBySender(UUID deliveryUuid);
 
-    ApiResponse<List<DeliveryResponse>> findDeliveryByDate(String dateCreated);
+    ApiResponse<List<DeliveryResponse>, BaseDto> findDeliveryByDate(String dateCreated);
 
 
 

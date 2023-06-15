@@ -1,5 +1,6 @@
 package delivery.management.services.others;
 
+import delivery.management.model.dto.BaseDto;
 import delivery.management.model.dto.response.othersResponse.ApiResponse;
 import delivery.management.model.entity.document.Document;
 import delivery.management.repo.others.DocumentRepository;
@@ -51,7 +52,7 @@ public class UploadServiceImpl implements UploadService {
         file.transferTo(new File(files));
 
         documentRepository.save(document);
-        return ResponseEntity.ok(new ApiResponse<String>(MessageUtil.SUCCESS, "files Upload Successfully"));
+        return ResponseEntity.ok(new ApiResponse<String, BaseDto>(MessageUtil.SUCCESS, "files Upload Successfully"));
 
     }
 

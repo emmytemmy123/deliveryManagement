@@ -2,8 +2,7 @@ package delivery.management.model.entity.transportation;
 
 
 import delivery.management.model.entity.BaseEntity;
-import delivery.management.model.entity.user.AppUser;
-import delivery.management.model.entity.user.Sender;
+import delivery.management.model.entity.user.Users;
 import delivery.management.model.listener.BaseListener;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,7 +22,7 @@ public class VehicleCategory extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "createdById", updatable = true)
-    private AppUser createdBy;
+    private Users createdBy;
 
 
     public VehicleCategory(){}

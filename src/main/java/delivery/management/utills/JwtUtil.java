@@ -39,7 +39,7 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(String username, String password) {
+    public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
 //        claims.put("username", username);
         return createToken(claims, username);
@@ -65,5 +65,7 @@ public class JwtUtil {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
+
+
 }
 

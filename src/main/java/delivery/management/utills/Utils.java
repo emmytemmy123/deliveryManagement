@@ -41,7 +41,7 @@ public class Utils {
         if (excelFilePath.endsWith("xlsx")) {
             workbook = new XSSFWorkbook();
         } else if (excelFilePath.endsWith("xls")) {
-            workbook = new HSSFWorkbook();
+            workbook =  new HSSFWorkbook();
         } else {
             throw new IllegalArgumentException("The specified file is not an Excel file");
         }

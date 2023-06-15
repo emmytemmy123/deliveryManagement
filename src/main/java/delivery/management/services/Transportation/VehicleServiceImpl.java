@@ -9,14 +9,13 @@ import delivery.management.model.dto.request.transportationRequest.VehicleReques
 import delivery.management.model.dto.response.transportationResponse.VehicleResponse;
 import delivery.management.model.entity.transportation.Vehicle;
 import delivery.management.model.entity.transportation.VehicleCategory;
-import delivery.management.model.entity.user.Driver;
+import delivery.management.model.entity.user.Users;
 import delivery.management.repo.transportation.VehicleCategoryRepository;
 import delivery.management.repo.transportation.VehicleRepository;
-import delivery.management.repo.user.DriverRepository;
+import delivery.management.repo.user.UsersRepository;
 import delivery.management.utills.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,7 +28,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     private final VehicleRepository vehicleRepository;
     private final VehicleCategoryRepository vehicleCategoryRepository;
-    private final DriverRepository driverRepository;
+    private final UsersRepository usersRepository;
 
 
 
@@ -73,7 +72,7 @@ public class VehicleServiceImpl implements VehicleService {
 
         validateDuplicateVehicleByPlateNo(request.getPlateNo());
 
-        Driver existingDriver = driverRepository.findByUuid(request.getDriverId())
+        Users existingDriver = usersRepository.findByUuid(request.getDriverId())
                 .orElseThrow(()->new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND));
 
         VehicleCategory existingVehicleCategory = vehicleCategoryRepository.findByUuid(request.getVehicleCategoryId())

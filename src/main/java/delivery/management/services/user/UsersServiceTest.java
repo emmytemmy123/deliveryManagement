@@ -1,9 +1,11 @@
 package delivery.management.services.user;
 
-public interface UserServiceTest {
+import delivery.management.model.entity.user.Users;
 
-    public AppUser getUserById(int anyInt);
+public interface UsersServiceTest {
 
-    public AppUser saveUser(AppUser user);
+    public Users getUserById(int anyInt);
+
+    public Users saveUser(Users user);
 
 }

@@ -1,6 +1,7 @@
 package delivery.management.services.transaction;
 
 import delivery.management.mapper.Mapper;
+import delivery.management.model.dto.BaseDto;
 import delivery.management.model.dto.enums.AppStatus;
 import delivery.management.model.dto.enums.MessageHelpers;
 import delivery.management.model.dto.request.productsRequest.ProductItemsRequest;
@@ -9,13 +10,9 @@ import delivery.management.model.dto.response.othersResponse.ApiResponse;
 import delivery.management.model.dto.response.transactionResponse.DeliveryResponse;
 import delivery.management.model.entity.products.ProductItems;
 import delivery.management.model.entity.transaction.Delivery;
-import delivery.management.model.entity.user.Customer;
-import delivery.management.model.entity.user.Driver;
-import delivery.management.model.entity.user.Sender;
+import delivery.management.model.entity.user.Users;
 import delivery.management.repo.products.ProductItemsRepository;
-import delivery.management.repo.user.CustomerRepository;
-import delivery.management.repo.user.DriverRepository;
-import delivery.management.repo.user.SenderRepository;
+import delivery.management.repo.user.UsersRepository;
 import delivery.management.utills.MessageUtil;
 import delivery.management.exception.RecordNotFoundException;
 import delivery.management.repo.transaction.DeliveryRepository;
@@ -34,9 +31,7 @@ import java.util.*;
 public class DeliveryServiceImpl implements DeliveryService {
 
     private final DeliveryRepository deliveryRepository;
-    private final DriverRepository driverRepository;
-    private final CustomerRepository customerRepository;
-    private final SenderRepository senderRepository;
+    private final UsersRepository usersRepository;
     private final ProductItemsRepository productItemsRepository;
 
 
@@ -46,7 +41,7 @@ public class DeliveryServiceImpl implements DeliveryService {
      * @Validate if the List of delivery is empty otherwise return record not found*
      * @return the list of delivery and a Success Message
      * * */
-    public ApiResponse<List<DeliveryResponse>> getListOfDelivery(int page, int size) {
+    public ApiResponse<List<DeliveryResponse>, BaseDto> getListOfDelivery(int page, int size) {
 
         List<Delivery> deliveryList = deliveryRepository.findAll(PageRequest.of(page,size)).toList();
         if(deliveryList.isEmpty())
@@ -64,7 +59,7 @@ public class DeliveryServiceImpl implements DeliveryService {
      * Create the delivery definition and get the DeliveryOptional by uuid
      * @return the list of DeliveryOptional and a Success Message
      * * */
-    public ApiResponse<DeliveryResponse> getDeliveryById(UUID deliveryId) {
+    public ApiResponse<DeliveryResponse, BaseDto> getDeliveryById(UUID deliveryId) {
 
         Optional<Delivery> deliveryOptional = deliveryRepository.findByUuid(deliveryId);
 
@@ -102,28 +97,16 @@ public class DeliveryServiceImpl implements DeliveryService {
 
 
     @Override
-    public ApiResponse<String> addDelivery(DeliveryRequest request) {
+    public ApiResponse<String, BaseDto> addDelivery(DeliveryRequest request) {
 
-        Sender existingSender  = senderRepository.findByUuid(request.getSendById())
+        Users existingUsers = usersRepository.findByUuid(request.getSendById())
                 .orElseThrow(()->new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND));
 
-        Driver existingDriver  = driverRepository.findByUuid(request.getDispatchById())
-                .orElseThrow(()->new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND));
-
-        Customer existingCustomer = customerRepository.findByUuid(request.getCustomerId())
-                .orElseThrow(()->new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND));
 
         Delivery delivery = new Delivery();
 
-        delivery.setDeliverBy(existingDriver.getName());
-        delivery.setPostedBy(existingSender.getName());
-        delivery.setDispatchTo(existingCustomer.getName());
-        delivery.setDeliveryStatus("pending");
-
-        delivery.setSender(existingSender);
-        delivery.setDriver(existingDriver);
-        delivery.setCustomer(existingCustomer);
-
+        delivery.setPostedBy(existingUsers.getName());
+        delivery.setUsers(existingUsers);
 
         Double deliveryAmount = 0.0;
         Double totalDeliveryAmount = 0.0;
@@ -138,18 +121,23 @@ public class DeliveryServiceImpl implements DeliveryService {
 
                 ProductItems productItems = new ProductItems();
 
-                productItems.setName(deliveryItems.getName());
+                productItems.setProductName(deliveryItems.getName());
                 productItems.setQuantity(deliveryItems.getQuantity());
                 productItems.setModel(deliveryItems.getModel());
                 productItems.setColour(deliveryItems.getColour());
                 productItems.setWeight(deliveryItems.getWeight());
                 productItems.setPhoto(deliveryItems.getPhoto());
+                productItems.setReceiverName(deliveryItems.getReceiverName());
+                productItems.setReceiverAddress(deliveryItems.getReceiverAddress());
+                productItems.setStatus(deliveryItems.getStatus());
                 productItems.setDescription(deliveryItems.getDescription());
                 productItems.setDelivery(delivery);
 
                 deliveryAmount += (deliveryItems.getWeight() * deliveryCostPerKg );
                 totalWeight += deliveryItems.getWeight();
                 totalQuantity += deliveryItems.getQuantity();
+
+                productItems.setAmount(deliveryAmount);
 
                 productItemsList.add(productItems);
 
@@ -161,7 +149,6 @@ public class DeliveryServiceImpl implements DeliveryService {
             delivery.setPaymentMode(request.getPaymentMode());
             delivery.setTotalQuantity(totalQuantity);
             delivery.setTotalWeight(totalWeight);
-            delivery.setCustomerAddress(request.getCustomerAddress());
 
 
         delivery.setProductItemsList(productItemsList);
@@ -187,16 +174,19 @@ public class DeliveryServiceImpl implements DeliveryService {
 
 
     @Override
-    public ApiResponse<String> updateDelivery(UUID productItemUuid, DeliveryRequest request) {
+    public ApiResponse<String, BaseDto> updateDelivery(UUID productItemUuid, DeliveryRequest request) {
 
         ProductItems productItems = validateProductItems(productItemUuid);
 
-        productItems.setName(productItems.getName());
+        productItems.setProductName(productItems.getProductName());
         productItems.setQuantity(productItems.getQuantity());
         productItems.setModel(productItems.getModel());
         productItems.setColour(productItems.getColour());
         productItems.setWeight(productItems.getWeight());
         productItems.setPhoto(productItems.getPhoto());
+        productItems.setReceiverName(productItems.getReceiverName());
+        productItems.setReceiverAddress(productItems.getReceiverAddress());
+        productItems.setStatus(productItems.getStatus());
         productItems.setDescription(productItems.getDescription());
 
         productItemsRepository.save(productItems);
@@ -211,7 +201,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         deliveryRepository.save(delivery);
 
-        return new ApiResponse<String>(AppStatus.SUCCESS.label, HttpStatus.OK.value(),
+        return new ApiResponse<String, BaseDto>(AppStatus.SUCCESS.label, HttpStatus.OK.value(),
                 MessageHelpers.UPDATE_SUCCESSFUL.message);
 
     }
@@ -219,7 +209,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
 
     @Override
-    public ApiResponse<List<DeliveryResponse>> getDeliveryBySender(UUID senderUuid) {
+    public ApiResponse<List<DeliveryResponse>, BaseDto> getDeliveryBySender(UUID senderUuid) {
 
         List<Delivery> deliveryList = deliveryRepository.findDeliveryBySender(senderUuid);
 
@@ -232,7 +222,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
 
     @Override
-    public ApiResponse<List<DeliveryResponse>> findDeliveryByDate(String dateCreated) {
+    public ApiResponse<List<DeliveryResponse>, BaseDto> findDeliveryByDate(String dateCreated) {
 
         List<Delivery> deliveryList = deliveryRepository.searchDeliveryByDateCreated(dateCreated);
 

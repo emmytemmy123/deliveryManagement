@@ -4,16 +4,19 @@ package delivery.management.services.user;
 import delivery.management.common.UserConstant;
 import delivery.management.dto.ApiResponse;
 import delivery.management.exception.RecordNotFoundException;
-import delivery.management.filter.JwtFilter;
 import delivery.management.mapper.Mapper;
 import delivery.management.model.dto.enums.AppStatus;
+import delivery.management.model.dto.request.othersRequest.AuthRequest;
+import delivery.management.model.dto.request.othersRequest.AuthRequest2;
 import delivery.management.model.dto.request.userRequest.UsersRequest;
-import delivery.management.model.dto.request.userRequest.changeUsersPasswordRequest;
-import delivery.management.model.dto.request.userRequest.loginUsersRequest;
+import delivery.management.model.dto.request.userRequest.changeUserPasswordRequest;
+import delivery.management.model.dto.response.othersResponse.AuthResponse;
 import delivery.management.model.dto.response.userResponse.UsersResponse;
 import delivery.management.model.entity.user.Users;
-import delivery.management.repo.user.UserRepository;
+import delivery.management.model.entity.user.UsersType;
 import delivery.management.repo.user.UsersRepository;
+import delivery.management.repo.user.UsersTypeRepository;
+import delivery.management.services.others.JwtAuthenticationServiceImpl;
 import delivery.management.utills.EmailUtils;
 import delivery.management.utills.JwtUtil;
 import delivery.management.utills.MessageUtil;
@@ -21,6 +24,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -30,14 +37,16 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl  implements UserService {
+public class UsersServiceImpl implements UsersService {
     private final UsersRepository usersRepository;
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtUtil;
-    private final JwtFilter jwtFilter;
+    private final UsersTypeRepository usersTypeRepository;
     private final EmailUtils emailUtils;
+    private final JwtAuthenticationServiceImpl jwtAuthenticationService;
+    private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
 
-
+    String username;
 
 
     @Override
@@ -56,28 +65,27 @@ public class UserServiceImpl  implements UserService {
 
 
     /**
-     * Set and get the users parameters
-     */
-    private Users getUserFromRequest(UsersRequest request) {
-        Users user = new Users();
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setAddress(request.getAddress());
-        user.setCountry(request.getCountry());
-        user.setCity(request.getCity());
-        user.setGender(request.getGender());
-        user.setPassword(request.getPassword());
-        user.setPhone(request.getPhone());
-        user.setUsername(request.getUsername());
-        user.setPhoto(request.getPhoto());
-
-        user.setRoles(UserConstant.DEFAULT_ROLE);//USER
-//        String encryptedPwd = passwordEncoder.encode(user.getPassword());
-//        user.setPassword(encryptedPwd);
-
-        return user;
+     * @validating userOptional by uuid*
+     * @Validate if the List of user is empty otherwise return record not found
+     * @return userOptional* *
+     * * */
+    private Users validateUser(UUID uuid) {
+        Optional<Users> userOptional = usersRepository.findByUuid(uuid);
+        if (userOptional.isEmpty())
+            throw new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND);
+        return userOptional.get();
     }
 
+
+    /**
+     * @Validating existingUsersOptional by email
+     * @Validate if the List of existingUsersOptional is empty otherwise return Duplicate Record*
+     * * */
+    private void validateDuplicationUsers(String email){
+        Optional<Users> existingUsersOptional = usersRepository.findByEmailId(email);
+        if(existingUsersOptional.isPresent())
+            throw new RecordNotFoundException("Duplicate record");
+    }
 
 
     @Override
@@ -88,14 +96,30 @@ public class UserServiceImpl  implements UserService {
      * @return success message
      * * */
     public ApiResponse<String> addUsers(UsersRequest request) {
-            Optional<Users> user = validateUserByEmailId(request.getEmail());
 
-            if (!user.isEmpty()) {
-                return new ApiResponse("Email Already Exist", AppStatus.FAILED.label,
-                        HttpStatus.EXPECTATION_FAILED.value());
-            }
+        validateDuplicationUsers(request.getEmail());
 
-        usersRepository.save(getUserFromRequest(request));
+        UsersType existingUsersType = usersTypeRepository.findByName(request.getAccountType())
+                .orElseThrow(()->new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND));
+
+        Users user = new Users();
+
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setAddress(request.getAddress());
+        user.setCountry(request.getCountry());
+        user.setCity(request.getCity());
+        user.setGender(request.getGender());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setPhone(request.getPhone());
+        user.setUsername(request.getUsername());
+        user.setPhoto(request.getPhoto());
+        user.setUsersType(existingUsersType);
+        user.setUsersCategory(existingUsersType.getName());
+        user.setRoles(UserConstant.DEFAULT_ROLE);//USER
+
+
+        usersRepository.save(user);
 
             return new ApiResponse("Record Added successfully", AppStatus.SUCCESS.label,
                     HttpStatus.OK.value());
@@ -116,6 +140,7 @@ public class UserServiceImpl  implements UserService {
                 throw new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND);
 
         Users appUser = userOptional.get();
+
             return new ApiResponse<UsersResponse>(AppStatus.SUCCESS.label,
                     Mapper.convertObject(appUser, UsersResponse.class));
         }
@@ -123,27 +148,8 @@ public class UserServiceImpl  implements UserService {
 //                "You are not Authorized");
 //    }
 
-    /**
-     * @validating userOptional by uuid*
-     * @Validate if the List of user is empty otherwise return record not found
-     * @return userOptional* *
-     * * */
-    private Users validateUser(UUID uuid) {
-        Optional<Users> userOptional = usersRepository.findByUuid(uuid);
-        if (userOptional.isEmpty())
-            throw new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND);
-        return userOptional.get();
-    }
 
-    /**
-     * @Validating existingUserOptional by Email
-     * @Validate if existingUserOptional is empty otherwise return Duplicate Record
-     * return existingUserOptional
-     * * */
-    private Optional<Users> validateUserByEmailId(String email) {
-        Optional<Users> existingUserOptional = usersRepository.findByEmailId(email);
-        return existingUserOptional;
-    }
+
 
 
 //    private AppUser postedByUuid(String postedBy) {
@@ -163,7 +169,7 @@ public class UserServiceImpl  implements UserService {
      * * */
     public ApiResponse<String> updateUsers(UUID userId, UsersRequest request) {
 //        if (jwtFilter.isAdmin()) {
-        Users user = validateUser(userId);
+            Users user = validateUser(userId);
             user.setName(request.getName());
             user.setEmail(request.getEmail());
             user.setAddress(request.getAddress());
@@ -205,7 +211,7 @@ public class UserServiceImpl  implements UserService {
      * @Validate user password and change password
      * @Save the new password and return a Success Message
      */
-    public ApiResponse<String> resetUsersPassword(String email, changeUsersPasswordRequest request) {
+    public ApiResponse<String> resetUsersPassword(String email, changeUserPasswordRequest request) {
 //        if (jwtFilter.isAdmin()) {
             Users users = usersRepository.findByEmail(email);
 
@@ -249,20 +255,18 @@ public class UserServiceImpl  implements UserService {
      * @Return a Success Message if email and password is correct
      * @Return a Failed Message if email and password is Incorrect
      */
-    public ApiResponse<String> loginUsers(String email, loginUsersRequest request) {
-        Users users = usersRepository.findByEmail(email);
+    public ApiResponse <AuthResponse> loginUsers(AuthRequest request) {
+        Users users = usersRepository.findByUsername(request.getUsername());
 
-        if (users.getEmail().equals(request.getEmail())
-                && users.getPassword().equals(request.getPassword())) {
+        if (users.getUsername().equals(request.getUsername()) && users.getPassword().equals(request.getPassword())) {
 
-            return new ApiResponse("User login successfully", AppStatus.SUCCESS.label,
-                    HttpStatus.OK.value());
-        }
+                return new ApiResponse<AuthResponse>(AppStatus.SUCCESS.label,
+                        Mapper.convertObject(users, AuthResponse.class));
+            }
 
         return new ApiResponse("Incorrect Email or Password", AppStatus.FAILED.label,
                 HttpStatus.BAD_REQUEST.value());
     }
-
 
     private List<String> getRolesByLoggedInUser(Principal principal) {
         String roles = getLoggedInUser(principal).getRoles();
@@ -277,7 +281,7 @@ public class UserServiceImpl  implements UserService {
     }
 
     private Users getLoggedInUser(Principal principal) {
-        return usersRepository.findByUsername(principal.getName()).get();
+        return usersRepository.findUsersByUsername(principal.getName()).get();
     }
 
 

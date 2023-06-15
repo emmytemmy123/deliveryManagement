@@ -1,6 +1,6 @@
 package delivery.management.config;
 
-import delivery.management.model.entity.user.AppUser;
+import delivery.management.model.entity.user.Users;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,14 +12,28 @@ import java.util.stream.Collectors;
 
 public class GroupUserDetails implements UserDetails {
 
+    private String usersCategory;
     private String userName;
     private String password;
+    private String name;
+    private String email;
+    private String phone;
+    private String address;
+    private String gender;
+    private String city;
     private boolean isActive;
     private List<GrantedAuthority> authorities;
 
-    public GroupUserDetails(AppUser user) {
+    public GroupUserDetails(Users user) {
         this.userName = user.getUsername();
         this.password = user.getPassword();
+        this.usersCategory = user.getUsersCategory();
+        this.name = user.getName();
+        this.phone = user.getPhone();
+        this.address = user.getAddress();
+        this.gender = user.getGender();
+        this.city = user.getCity();
+        this.email = user.getEmail();
         this.isActive = user.isActive();
         this.authorities = Arrays.stream(user.getRoles().split(","))
                 .map(SimpleGrantedAuthority::new)
@@ -31,10 +45,29 @@ public class GroupUserDetails implements UserDetails {
         return authorities;
     }
 
-    @Override
-    public String getPassword() {
-        return password;
+
+    public String getUsersCategory() {return usersCategory;}
+    public String getName() {
+        return name;
     }
+    public String getEmail() {
+        return email;
+    }
+    public String getPhone() {
+        return phone;
+    }
+    public String getAddress() {
+        return address;
+    }
+    public String getGender() {
+        return gender;
+    }
+    public String getCity() {
+        return city;
+    }
+
+    @Override
+    public String getPassword() {return password;}
 
     @Override
     public String getUsername() {

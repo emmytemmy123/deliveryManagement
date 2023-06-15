@@ -3,9 +3,9 @@ package delivery.management;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import delivery.management.model.dto.Others.TestData;
-import delivery.management.model.entity.user.AppUser;
 import delivery.management.controller.usersControllers.UsersController;
-import delivery.management.services.user.UserServiceTest;
+import delivery.management.model.entity.user.Users;
+import delivery.management.services.user.UsersServiceTest;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -27,7 +27,7 @@ public class userControllerTest {
 
     private final MockMvc mockMvc;
 
-    private final UserServiceTest userServiceTest;
+    private final UsersServiceTest usersServiceTest;
 
     private final ObjectMapper objectMapper;
 
@@ -35,7 +35,7 @@ public class userControllerTest {
 
   @Test
     public void getUserByIdTest() throws Exception {
-        when(userServiceTest.getUserById(anyInt())).thenReturn(TestData.getListOfUsers().get(anyInt()));
+        when(usersServiceTest.getUserById(anyInt())).thenReturn(TestData.getListOfUsers().get(anyInt()));
          mockMvc.perform(MockMvcRequestBuilders.get("/users/2"))
                  .andDo(print())
                 .andExpect(status().isOk());
@@ -45,7 +45,7 @@ public class userControllerTest {
     @Test
     public void saveUserTest() throws Exception {
 
-        AppUser user = new AppUser();
+        Users user = new Users();
 
         user.setId(4L);
         user.setName("John");
@@ -54,7 +54,7 @@ public class userControllerTest {
         user.setUsername("johnny");
         user.setPassword("joshua123");
 
-        when(userServiceTest.saveUser(any(AppUser.class))).thenReturn((user));
+        when(usersServiceTest.saveUser(any(Users.class))).thenReturn((user));
         mockMvc.perform(MockMvcRequestBuilders.post("/users/add")
                 .content(objectMapper.writeValueAsString(user))
                 .contentType(TestData.getContentType()))
@@ -69,7 +69,7 @@ public class userControllerTest {
     @Test
     public void saveUserTest2() throws Exception {
 
-        when(userServiceTest.saveUser(any(AppUser.class))).thenReturn((AppUser) TestData.addUser());
+        when(usersServiceTest.saveUser(any(Users.class))).thenReturn((Users) TestData.addUser());
         mockMvc.perform(MockMvcRequestBuilders.post("/users/add")
                         .content(objectMapper.writeValueAsString(TestData.getUseRequest()))
                         .contentType(TestData.getContentType()))

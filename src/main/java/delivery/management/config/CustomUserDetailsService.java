@@ -1,8 +1,8 @@
 package delivery.management.config;
 
 
-import delivery.management.model.entity.user.AppUser;
-import delivery.management.repo.user.UserRepository;
+import delivery.management.model.entity.user.Users;
+import delivery.management.repo.user.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,16 +15,16 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UsersRepository usersRepository;
 
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
 
-        Optional<AppUser> user = userRepository.findByUsername(username);
+        Optional<Users> user = Optional.ofNullable(usersRepository.findByUsername(userName));
 
         return user.map(GroupUserDetails::new)
-                .orElseThrow(() -> new UsernameNotFoundException(username + " Not Found"));    }
+                .orElseThrow(() -> new UsernameNotFoundException(userName + " Not Found"));    }
 
 
 }

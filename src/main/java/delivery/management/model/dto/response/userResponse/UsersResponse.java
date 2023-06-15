@@ -5,7 +5,7 @@ import delivery.management.model.dto.BaseDto;
 import lombok.Data;
 
 @Data
-public class SenderResponse extends BaseDto {
+public class UsersResponse extends BaseDto {
 
      private String name;
      private String email;

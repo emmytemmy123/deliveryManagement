@@ -8,9 +8,8 @@ import delivery.management.model.dto.enums.AppStatus;
 import delivery.management.model.dto.request.transportationRequest.VehicleCategoryRequest;
 import delivery.management.model.dto.response.transportationResponse.VehicleCategoryResponse;
 import delivery.management.model.entity.transportation.VehicleCategory;
-import delivery.management.model.entity.user.AppUser;
 import delivery.management.repo.transportation.VehicleCategoryRepository;
-import delivery.management.repo.user.UserRepository;
+import delivery.management.repo.user.UsersRepository;
 import delivery.management.utills.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +25,7 @@ import java.util.UUID;
 public class VehicleCategoryServiceImpl implements VehicleCategoryService {
 
     private final VehicleCategoryRepository vehicleCategoryRepository;
-    private final UserRepository userRepository;
+    private final UsersRepository usersRepository;
 
 
     @Override
@@ -70,8 +69,6 @@ public class VehicleCategoryServiceImpl implements VehicleCategoryService {
 
         Optional<VehicleCategory> vehicleCategoryOptional = validateDuplicateVehicleCategory(request.getName());
 
-        AppUser existingUser  = userRepository.findByUuid(request.getCreatedById())
-                .orElseThrow(()->new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND));
 
         if (!vehicleCategoryOptional.isEmpty()) {
             return new ApiResponse("Duplicate Record", AppStatus.FAILED.label,
@@ -82,7 +79,6 @@ public class VehicleCategoryServiceImpl implements VehicleCategoryService {
 
         vehicleCategory.setName(request.getName());
         vehicleCategory.setDescription(request.getDescription());
-        vehicleCategory.setCreatedBy(existingUser);
 
         vehicleCategoryRepository.save(vehicleCategory);
 

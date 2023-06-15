@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Data
-public class SenderRequest {
+public class UsersRequest {
 
         @NotNull(message = MessageUtil.INVALID_FIRSTNAME)
         @NotEmpty(message = MessageUtil.INVALID_FIRSTNAME)
@@ -38,13 +38,13 @@ public class SenderRequest {
         @NotEmpty(message = MessageUtil.INVALID_PHONE)
         private String phone;
 
-        @NotNull(message = MessageUtil.INVALID_PHONE)
+//        @NotNull(message = MessageUtil.INVALID_PHONE)
 //        @NotEmpty(message = MessageUtil.INVALID_PHONE)
         private String photo;
 
-        @NotNull(message = MessageUtil.INVALID_PASSWORD)
-        @NotEmpty(message = MessageUtil.INVALID_PASSWORD)
-        private String nin;
+//        @NotNull(message = MessageUtil.INVALID_PASSWORD)
+//        @NotEmpty(message = MessageUtil.INVALID_PASSWORD)
+        private String driverLicense;
 
         @NotNull(message = MessageUtil.INVALID_USERNAME)
         @NotEmpty(message = MessageUtil.INVALID_USERNAME)
@@ -53,6 +53,8 @@ public class SenderRequest {
         @NotNull(message = MessageUtil.INVALID_PASSWORD)
         @NotEmpty(message = MessageUtil.INVALID_PASSWORD)
         private String password;
+
+        private String accountType;
 
 
 
