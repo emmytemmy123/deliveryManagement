@@ -36,6 +36,15 @@ public class TransactionEndPoints {
     public static final String FIND_LISTS_OF_DELIVERY_BY_DATE= DELIVERY+"/findOrderByDate";
 
 
+    public static final String DISPATCH="/dispatch";
+    public static final String FIND_DISPATCH=DISPATCH+"/list";
+    public static final String ADD_DISPATCH= DISPATCH+"/add";
+    public static final String FIND_DISPATCH_BY_SENDER= DISPATCH+"/findDispatchBySender";
+
+
+
+
+
 
 
 }

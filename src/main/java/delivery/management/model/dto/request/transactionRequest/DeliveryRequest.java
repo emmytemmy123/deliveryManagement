@@ -15,25 +15,20 @@ import static delivery.management.utills.MessageUtil.INVALID_NAME;
 @Data
 public class DeliveryRequest {
 
-
-        private String deliveryDate;
-
         @NotNull(message = INVALID_NAME)
         @NotEmpty(message = INVALID_NAME)
         private String paymentMode;
 
         @NotNull(message = INVALID_NAME)
         @NotEmpty(message = INVALID_NAME)
-        private String customerAddress;
+        private String receiverAddress;
+
+        @NotNull(message = INVALID_NAME)
+        @NotEmpty(message = INVALID_NAME)
+        private String receiverName;
 
         @NotNull(message = MessageUtil.INVALID_NAME)
-        private UUID sendById;
-
-        @NotNull(message = MessageUtil.INVALID_NAME)
-        private UUID customerId;
-
-        @NotNull(message = MessageUtil.INVALID_NAME)
-        private UUID dispatchById;
+        private UUID senderId;
 
         private List<ProductItemsRequest> items;
 

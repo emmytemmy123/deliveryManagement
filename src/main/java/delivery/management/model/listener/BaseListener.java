@@ -3,6 +3,8 @@ package delivery.management.model.listener;
 import delivery.management.model.entity.document.Document;
 import delivery.management.model.entity.products.ProductItems;
 import delivery.management.model.entity.transaction.Delivery;
+import delivery.management.model.entity.transaction.DispatchDriver;
+import delivery.management.model.entity.transaction.Payment;
 import delivery.management.model.entity.user.Users;
 import delivery.management.model.entity.transportation.Vehicle;
 import delivery.management.model.entity.transportation.VehicleCategory;
@@ -53,11 +55,15 @@ public class BaseListener {
             vehicle.setUuid(UUID.randomUUID());
         }
 
-        else if(data instanceof Users){
-            Users users = (Users) data;
-            users.setUuid(UUID.randomUUID());
+        else if(data instanceof DispatchDriver){
+            DispatchDriver dispatchDriver = (DispatchDriver) data;
+            dispatchDriver.setUuid(UUID.randomUUID());
         }
 
+        else if(data instanceof Payment){
+            Payment payment = (Payment) data;
+            payment.setUuid(UUID.randomUUID());
+        }
 
 
 

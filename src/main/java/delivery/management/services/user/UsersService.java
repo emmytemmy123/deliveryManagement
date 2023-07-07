@@ -24,7 +24,9 @@ public interface UsersService {
 
     ApiResponse<UsersResponse> getUsersById(UUID userId);
 
-    ApiResponse<String> updateUsers( UUID userId, UsersRequest request);
+    ApiResponse<String> updateUsers( UUID userUuid, UsersRequest request);
+
+//    ApiResponse<String> updateUsersByUsername( String username, UsersRequest request);
 
     ApiResponse<String> deleteUsers(UUID userId);
 
@@ -33,6 +35,8 @@ public interface UsersService {
     ApiResponse<String> forgotUsersPassword(String email) throws MessagingException;
 
     ApiResponse<AuthResponse> loginUsers(AuthRequest request);
+
+    ApiResponse<UsersResponse> getUsersByUsername(String username);
 
 
 

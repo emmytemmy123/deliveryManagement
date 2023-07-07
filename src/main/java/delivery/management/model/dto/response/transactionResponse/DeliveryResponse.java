@@ -13,17 +13,17 @@ public class DeliveryResponse extends BaseDto {
      private String deliveryNo;
      private Double totalDeliveryAmount;
      private Double totalAmountDue;
-     private String deliveryStatus;
-     private LocalDateTime deliveryDate;
-     private String customerAddress;
+     private String status;
      private Integer serialNo;
      private String paymentMode;
      private Integer totalQuantity;
      private Integer totalWeight;
+     private String postedBy;
+     private String receiverName;
+     private String receiverAddress;
 
-     private PostedByResponse sender;
-     private DeliverByResponse driver;
-     private DispathToResponse customer;
+
+//     private DispatchResponse dispatchDriver;
      private List<ProductResponse> productItemsList;
 
 }

@@ -26,21 +26,16 @@ public class JwtAuthenticationController {
     private final JwtAuthenticationService jwtAuthenticationService;
 
 
-    @PostMapping(AUTHENTICATE_USER)
-    @ApiOperation(value = "Endpoint for authenticate Username And Password ", response = String.class)
-    public String authenticateUsernameAndPassword(@Valid @RequestBody AuthRequest request) throws IOException {
-        return jwtAuthenticationService.authenticateUsernameAndPassword(request);
-    }
 
     @PostMapping(AUTHENTICATE_USERS)
     @ApiOperation(value = "Endpoint for authenticate Username And Password2 ", response = String.class)
     public ResponseEntity authenticateUsernameAndPassword2(@Valid @RequestBody AuthRequest request) throws IOException {
-        return jwtAuthenticationService.authenticateUsernameAndPassword2(request);
+        return jwtAuthenticationService.authenticateUsernameAndPassword(request);
     }
 
 
 
-    @GetMapping(GIVE_ACCESS_TO_USER)
+    @GetMapping(GIVE_ACCESS_TO_USERS)
 //    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR')")
     @ApiOperation(value = "Endpoint for giving access to users")
     public String giveAccessToUser(@PathVariable UUID uuid, @PathVariable String userRole, Principal principal) {

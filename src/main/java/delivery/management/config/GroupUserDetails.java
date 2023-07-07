@@ -8,12 +8,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class GroupUserDetails implements UserDetails {
 
     private String usersCategory;
     private String userName;
+    private UUID uuid;
     private String password;
     private String name;
     private String email;
@@ -34,6 +36,7 @@ public class GroupUserDetails implements UserDetails {
         this.gender = user.getGender();
         this.city = user.getCity();
         this.email = user.getEmail();
+        this.uuid = user.getUuid();
         this.isActive = user.isActive();
         this.authorities = Arrays.stream(user.getRoles().split(","))
                 .map(SimpleGrantedAuthority::new)
@@ -65,6 +68,10 @@ public class GroupUserDetails implements UserDetails {
     public String getCity() {
         return city;
     }
+    public UUID getUuid() {
+        return uuid;
+    }
+
 
     @Override
     public String getPassword() {return password;}

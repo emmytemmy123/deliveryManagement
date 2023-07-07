@@ -23,10 +23,10 @@ import java.util.UUID;
 import static delivery.management.utills.EndPoints.UsersEndPoints.*;
 import static delivery.management.utills.EndpointParam.*;
 
-@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping(users)
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 public class UsersController  {
 
     private final UsersService usersService;
@@ -60,13 +60,13 @@ public class UsersController  {
     @PostMapping(ADD_USERS)
 //    @PreAuthorize("hasAuthority('ROLE_ADMIN') ")
     @ApiOperation(value = "Endpoint for adding new user to database", response = String.class)
-    public delivery.management.dto.ApiResponse<String> addUsers(@Valid @RequestBody UsersRequest request) {
+    public ApiResponse<String> addUsers(@Valid @RequestBody UsersRequest request) {
         return usersService.addUsers(request);
     }
 
     @PostMapping(ADD_USERTYPE)
     @ApiOperation(value = "Endpoint for adding new userType to database", response = String.class)
-    public delivery.management.dto.ApiResponse<String> addUserType(@Valid @RequestBody UserTypeRequest request) {
+    public ApiResponse<String> addUserType(@Valid @RequestBody UserTypeRequest request) {
 
         return userTypeService.addUsersCategory(request);
     }
@@ -79,29 +79,29 @@ public class UsersController  {
     @GetMapping(FIND_USERS_BY_ID)
 //    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
     @ApiOperation(value = "Endpoint for fetching sender by id from database", response = UsersResponse.class)
-    public delivery.management.dto.ApiResponse<UsersResponse> getUsersById(@PathVariable(value = "id") UUID usersId) {
+    public ApiResponse<UsersResponse> getUsersById(@PathVariable(value = "id") UUID usersId) {
         return usersService.getUsersById(usersId);
     }
 
     @GetMapping(FIND_USERTYPE_BY_ID)
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
     @ApiOperation(value = "Endpoint for fetching userType by id from database", response = UserTypeResponse.class)
-    public delivery.management.dto.ApiResponse<UserTypeResponse> getUserTypeById(@PathVariable(value = "id") UUID userTypeId) {
+    public ApiResponse<UserTypeResponse> getUserTypeById(@PathVariable(value = "id") UUID userTypeId) {
         return userTypeService.getUsersTypeById(userTypeId);
     }
 
                                     //FIND USERTYPE BY NAME
-//    @GetMapping(FIND_USERTYPE_BY_NAME)
-////    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
-//    @ApiOperation(value = "Endpoint for fetching userType by name from database", response = UserTypeResponse.class)
-//    public delivery.management.dto.ApiResponse<UserTypeResponse> getUserTypeByName(@RequestParam String name) {
-//        return userTypeService.getUsersTypeByName(name);
-//    }
+    @GetMapping(FIND_USERS_USERNAME)
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
+    @ApiOperation(value = "Endpoint for fetching USERS by username from database", response = UsersResponse.class)
+    public ApiResponse<UsersResponse> getUsersByUsername(@RequestParam String username) {
+        return usersService.getUsersByUsername(username);
+    }
 
     @GetMapping(FIND_USERTYPE_BY_NAME)
 //    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') or hasAuthority('ROLE_USER') ")
     @ApiOperation(value = "Endpoint for retrieving lists of usertype by Name", response = UserTypeResponse.class, responseContainer = "List")
-    public delivery.management.dto.ApiResponse<UserTypeResponse> searchListOfUsersTypeByName(@RequestParam(value=PAGE, defaultValue = PAGE_DEFAULT) int page,
+    public ApiResponse<UserTypeResponse> searchListOfUsersTypeByName(@RequestParam(value=PAGE, defaultValue = PAGE_DEFAULT) int page,
                                                                                              @RequestParam(value=SIZE,defaultValue=SIZE_DEFAULT) int size,
                                                                                              @RequestParam String name ) {
         return userTypeService.getUsersTypeByName(name);
@@ -112,18 +112,17 @@ public class UsersController  {
                                         //UPDATE_USERS
 
     @PutMapping(UPDATE_USERS)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
     @ApiOperation(value = "Endpoint for updating users by id from database", response = String.class)
-    public delivery.management.dto.ApiResponse<String> updateUsers(@PathVariable(value = "id") UUID usersId,
-                                                                   @RequestBody UsersRequest request) {
-        return usersService.updateUsers(usersId, request);
+    public ApiResponse<String> updateUsers(@PathVariable(value = "uuid") UUID userUuid,
+                                           @RequestBody UsersRequest request) {
+        return usersService.updateUsers(userUuid, request);
     }
-
 
     @PutMapping(UPDATE_USERTYPE)
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') or hasAuthority('ROLE_USER') ")
     @ApiOperation(value = "Endpoint for updating userType by id from database", response = String.class)
-    public delivery.management.dto.ApiResponse<String> updateUserType(@PathVariable(value = "id") UUID userId,
+    public ApiResponse<String> updateUserType(@PathVariable(value = "id") UUID userId,
                                                                       @RequestBody UserTypeRequest request) {
         return userTypeService.updateUsersCategory(userId, request);
     }
@@ -144,7 +143,7 @@ public class UsersController  {
 
                                 //Change Password
 
-    @PutMapping(RESET_USER_PASSWORD)
+    @PutMapping(RESET_USERS_PASSWORD)
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') or hasAuthority('ROLE_USER') ")
     @ApiOperation(value = "Endpoint for resetting users password from database", response = String.class)
     public delivery.management.dto.ApiResponse<String> resetUserPassword(@RequestBody changeUserPasswordRequest request, String email) {
@@ -165,7 +164,7 @@ public class UsersController  {
 
 
                                         //Forgot Password
-    @GetMapping(FORGOT_USER_PASSWORD)
+    @GetMapping(FORGOT_USERS_PASSWORD)
     @PreAuthorize("hasAuthority('ROLE_USER') ")
     @ApiOperation(value = "Endpoint for getting forgotten users password from database", response = String.class)
     public delivery.management.dto.ApiResponse<String> forgotUserPassword(String email) throws MessagingException {

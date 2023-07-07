@@ -7,7 +7,6 @@ import delivery.management.exception.RecordNotFoundException;
 import delivery.management.mapper.Mapper;
 import delivery.management.model.dto.enums.AppStatus;
 import delivery.management.model.dto.request.othersRequest.AuthRequest;
-import delivery.management.model.dto.request.othersRequest.AuthRequest2;
 import delivery.management.model.dto.request.userRequest.UsersRequest;
 import delivery.management.model.dto.request.userRequest.changeUserPasswordRequest;
 import delivery.management.model.dto.response.othersResponse.AuthResponse;
@@ -24,9 +23,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -84,7 +80,22 @@ public class UsersServiceImpl implements UsersService {
     private void validateDuplicationUsers(String email){
         Optional<Users> existingUsersOptional = usersRepository.findByEmailId(email);
         if(existingUsersOptional.isPresent())
-            throw new RecordNotFoundException("Duplicate record");
+            throw new RecordNotFoundException("Email Already Exist");
+
+    }
+
+
+    /**
+     * @return
+     * @Validating existingUsersOptional by username
+     * @Validate if the List of existingUsersOptional is empty otherwise return Duplicate Record*
+     * *
+     */
+    private Users validateUsersByUseraname(String username){
+        Optional<Users> existingUsersOptional = usersRepository.findUsersByUsername2(username);
+        if(existingUsersOptional.isEmpty())
+            throw new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND);
+        return existingUsersOptional.get();
     }
 
 
@@ -167,26 +178,100 @@ public class UsersServiceImpl implements UsersService {
      * Create the user definition and update
      * @return a Success Message
      * * */
-    public ApiResponse<String> updateUsers(UUID userId, UsersRequest request) {
-//        if (jwtFilter.isAdmin()) {
-            Users user = validateUser(userId);
-            user.setName(request.getName());
-            user.setEmail(request.getEmail());
-            user.setAddress(request.getAddress());
-            user.setCountry(request.getCountry());
-            user.setCity(request.getCity());
-            user.setGender(request.getGender());
-            user.setPassword(request.getPassword());
-            user.setPhone(request.getPhone());
-            user.setUsername(request.getUsername());
-            user.setPhoto(request.getPhoto());
+    public ApiResponse<String> updateUsers(UUID userUuid, UsersRequest request) {
 
-            usersRepository.save(user);
+            Users user = validateUser(userUuid);
+
+        if (request.getName() != null) {
+            user.setName(request.getName());
+        }
+        if (request.getEmail() != null) {
+            user.setEmail(request.getEmail());
+        }
+        if (request.getAddress() != null) {
+            user.setAddress(request.getAddress());
+        }
+        if (request.getCountry() != null) {
+            user.setCountry(request.getCountry());
+        }
+        if (request.getCity() != null) {
+            user.setCity(request.getCity());
+        }
+        if (request.getGender() != null) {
+            user.setGender(request.getGender());
+        }
+        if (request.getPhone() != null) {
+            user.setPhone(request.getPhone());
+        }
+        if (request.getUsername() != null) {
+            user.setUsername(request.getUsername());
+        }
+        if (request.getPhoto() != null) {
+            user.setPhoto(request.getPhoto());
+        }
+        if (request.getDriverLicense() != null) {
+            user.setDriverLicense(request.getDriverLicense());
+        }
+
+
+        usersRepository.save(user);
             return new ApiResponse<>(AppStatus.SUCCESS.label, "Record Updated Successfully");
         }
-//        return new ApiResponse(AppStatus.REJECT.label, HttpStatus.EXPECTATION_FAILED.value(),
-//                "You are not Authorized");
+
+
+    /**
+     * @validating userOptional by uuid
+     * @Validate if the List of user is empty otherwise return record not found
+     * Create the user definition and update
+     * @return a Success Message
+     * * */
+//    @Override
+//    public ApiResponse<String> updateUsersByUsername(String username, UsersRequest request) {
+//
+//        Users user = validateUsersByUseraname(username);
+//
+//        if (request.getName() != null) {
+//            user.setName(request.getName());
+//        }
+//        if (request.getEmail() != null) {
+//            user.setEmail(request.getEmail());
+//        }
+//        if (request.getAddress() != null) {
+//            user.setAddress(request.getAddress());
+//        }
+//        if (request.getCountry() != null) {
+//            user.setCountry(request.getCountry());
+//        }
+//        if (request.getCity() != null) {
+//            user.setCity(request.getCity());
+//        }
+//        if (request.getGender() != null) {
+//            user.setGender(request.getGender());
+//        }
+//        if (request.getPhone() != null) {
+//            user.setPhone(request.getPhone());
+//        }
+//        if (request.getUsername() != null) {
+//            user.setUsername(request.getUsername());
+//        }
+//        if (request.getPhoto() != null) {
+//            user.setPhoto(request.getPhoto());
+//        }
+//        if (request.getDriverLicense() != null) {
+//            user.setDriverLicense(request.getDriverLicense());
+//        }
+//
+//
+//        usersRepository.save(user);
+//        return new ApiResponse<>(AppStatus.SUCCESS.label, "Record Updated Successfully");
+//
+//
 //    }
+//
+
+
+
+
 
     @Override
     /**
@@ -266,6 +351,21 @@ public class UsersServiceImpl implements UsersService {
 
         return new ApiResponse("Incorrect Email or Password", AppStatus.FAILED.label,
                 HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Override
+    public ApiResponse<UsersResponse> getUsersByUsername(String username) {
+
+    Optional<Users> existingUsersOption = usersRepository.findUsersByUsername(username);
+    if(existingUsersOption.isEmpty())
+        throw new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND);
+
+    Users users = existingUsersOption.get();
+
+    return  new ApiResponse<UsersResponse>(AppStatus.SUCCESS.label,
+            Mapper.convertObject(users, UsersResponse.class));
+
+
     }
 
     private List<String> getRolesByLoggedInUser(Principal principal) {

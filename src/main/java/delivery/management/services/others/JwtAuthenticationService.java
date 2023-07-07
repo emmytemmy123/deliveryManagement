@@ -11,11 +11,10 @@ import java.util.UUID;
 
 public interface JwtAuthenticationService {
 
-    public String authenticateUsernameAndPassword(AuthRequest authRequest);
 
     String giveAccessToUser(UUID uuid, String userRole, Principal principal);
 
-    ResponseEntity<?> authenticateUsernameAndPassword2(AuthRequest authRequest);
+    ResponseEntity<?> authenticateUsernameAndPassword(AuthRequest authRequest);
 
 
 

@@ -39,23 +39,48 @@ public class JwtAuthenticationServiceImpl implements JwtAuthenticationService{
     private final AuthenticationManager authenticationManager;
 
     private final UsersRepository usersRepository;
+
      String username;
 
-//    private final JwtTokenProvider tokenProvider;
-
+     String token;
 
 
     @Override
-    public String authenticateUsernameAndPassword(AuthRequest authRequest) {
+    public ResponseEntity<?> authenticateUsernameAndPassword(AuthRequest authRequest) {
+
+        Optional<Users> existingUsersOptional = usersRepository.findUsersByUsername(authRequest.getUsername());
+        if (existingUsersOptional.isEmpty())
+            throw new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND);
+
+        Users appUser = existingUsersOptional.get();
+
+        if (!appUser.getUsername().equals(authRequest.getUsername()) ||
+                !appUser.getPassword().equals(authRequest.getPassword())) {
+            throw new RecordNotFoundException("Invalid username or password");
+        }
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
 
         if (authentication.isAuthenticated() )
+            token = jwtUtil.generateToken(authRequest.getUsername());
 
-            return jwtUtil.generateToken(authRequest.getUsername());
+        GroupUserDetails userDetails = (GroupUserDetails) authentication.getPrincipal();
 
-        throw new UsernameNotFoundException("invalid user request !");
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("token", token);
+        response.put("username", userDetails.getUsername());
+        response.put("name", userDetails.getName());
+        response.put("email", userDetails.getEmail());
+        response.put("usersCategory", userDetails.getUsersCategory());
+        response.put("phone", userDetails.getPhone());
+        response.put("address", userDetails.getAddress());
+        response.put("city", userDetails.getCity());
+        response.put("gender", userDetails.getGender());
+        response.put("uuid", userDetails.getUuid());
+
+        return ResponseEntity.ok(response);
 
     }
 
@@ -72,8 +97,6 @@ public class JwtAuthenticationServiceImpl implements JwtAuthenticationService{
             throw new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND);
         return userOptional.get();
     }
-
-
 
     @Override
     public String giveAccessToUser(UUID uuid, String userRole, Principal principal) {
@@ -94,58 +117,6 @@ public class JwtAuthenticationServiceImpl implements JwtAuthenticationService{
 
     }
 
-    @Override
-    public ResponseEntity<?> authenticateUsernameAndPassword2(AuthRequest authRequest) {
-
-        Optional<Users> existingUsersOptional = usersRepository.findUsersByUsername(authRequest.getUsername());
-        if (existingUsersOptional.isEmpty())
-
-            throw new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND);
-
-        Users appUser = existingUsersOptional.get();
-
-        if (!appUser.getUsername().equals(authRequest.getUsername()) ||
-                !appUser.getPassword().equals(authRequest.getPassword())) {
-            throw new RecordNotFoundException("Invalid username or password");
-        }
-
-            // Authenticate user
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            authRequest.getUsername(),
-                            authRequest.getPassword()
-                    )
-            );
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            // Generate JWT token
-            String token = jwtUtil.generateToken(username);
-
-            // Get user details
-            GroupUserDetails userDetails = (GroupUserDetails) authentication.getPrincipal();
-
-            // Return token and user details in the response
-            Map<String, Object> response = new HashMap<>();
-
-            response.put("token", token);
-            response.put("username", userDetails.getUsername());
-            response.put("name", userDetails.getName());
-            response.put("email", userDetails.getEmail());
-            response.put("usersCategory", userDetails.getUsersCategory());
-            response.put("phone", userDetails.getPhone());
-            response.put("address", userDetails.getAddress());
-            response.put("city", userDetails.getCity());
-            response.put("gender", userDetails.getGender());
-
-
-            return ResponseEntity.ok(response);
-
-
-    }
-
-
-
 
     private List<String> getRolesByLoggedInUser(Principal principal) {
 
@@ -161,7 +132,6 @@ public class JwtAuthenticationServiceImpl implements JwtAuthenticationService{
         }
         return Collections.emptyList();
     }
-
 
     private Users getNameOfLoggedInUser(Principal principal) {
         return usersRepository.findUsersByUsername(principal.getName()).get();

@@ -38,16 +38,8 @@ public class ProductItemsRequest {
      @NotEmpty(message = MessageUtil.INVALID_NAME)
      private String description;
 
-     @NotNull(message = MessageUtil.INVALID_NAME)
-     @NotEmpty(message = MessageUtil.INVALID_NAME)
-     private String receiverAddress;
-
-     @NotNull(message = MessageUtil.INVALID_NAME)
-     @NotEmpty(message = MessageUtil.INVALID_NAME)
-     private String receiverName;
-
-     @NotNull(message = MessageUtil.INVALID_NAME)
-     @NotEmpty(message = MessageUtil.INVALID_NAME)
+//     @NotNull(message = MessageUtil.INVALID_NAME)
+//     @NotEmpty(message = MessageUtil.INVALID_NAME)
      private String status;
 
 

@@ -21,16 +21,14 @@ public class Delivery extends BaseEntity {
     private String deliveryNo;
     private Double totalDeliveryAmount;
     private Double totalAmountDue;
-    private String deliveryStatus;
-    private String deliveryDate;
+    private String status;
     private Integer serialNo;
     private String paymentMode;
     private Integer totalQuantity;
     private Integer totalWeight;
     private String postedBy;
-    private String deliverBy;
-    private String dispatchTo;
-
+    private String receiverName;
+    private String receiverAddress;
 
 
     @ManyToOne
@@ -39,6 +37,14 @@ public class Delivery extends BaseEntity {
 
     @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL)
     private List<ProductItems> productItemsList;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "paymentId", updatable = true)
+    private Payment payment;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "dispatchId", updatable = true)
+    private DispatchDriver dispatchDriver;
 
 
     public Delivery(){}

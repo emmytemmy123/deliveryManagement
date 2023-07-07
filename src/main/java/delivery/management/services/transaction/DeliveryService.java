@@ -22,7 +22,7 @@ public interface DeliveryService {
 
     ApiResponse<List<DeliveryResponse>, BaseDto> getDeliveryBySender(UUID deliveryUuid);
 
-    ApiResponse<List<DeliveryResponse>, BaseDto> findDeliveryByDate(String dateCreated);
+//    ApiResponse<List<DeliveryResponse>, BaseDto> findDeliveryByDate(String dateCreated);
 
 
 

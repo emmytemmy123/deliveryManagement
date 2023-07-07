@@ -18,16 +18,16 @@ public class UsersRequest {
         @NotEmpty(message = MessageUtil.INVALID_EMAIL)
         private String email;
 
-        @NotNull(message = MessageUtil.INVALID_GENDER)
-        @NotEmpty(message = MessageUtil.INVALID_GENDER)
+//        @NotNull(message = MessageUtil.INVALID_GENDER)
+//        @NotEmpty(message = MessageUtil.INVALID_GENDER)
         private String gender;
 
-        @NotNull(message = MessageUtil.INVALID_COUNTRY)
-        @NotEmpty(message = MessageUtil.INVALID_COUNTRY)
+//        @NotNull(message = MessageUtil.INVALID_COUNTRY)
+//        @NotEmpty(message = MessageUtil.INVALID_COUNTRY)
         private String country;
 
-        @NotNull(message = MessageUtil.INVALID_CITY)
-        @NotEmpty(message = MessageUtil.INVALID_CITY)
+//        @NotNull(message = MessageUtil.INVALID_CITY)
+//        @NotEmpty(message = MessageUtil.INVALID_CITY)
         private String city;
 
         @NotNull(message = MessageUtil.INVALID_ADDRESS)

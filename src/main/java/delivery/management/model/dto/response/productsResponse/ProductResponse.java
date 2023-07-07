@@ -7,12 +7,14 @@ import lombok.Data;
 @Data
 public class ProductResponse {
 
-     private String name;
+     private String productName;
      private Integer quantity;
      private String model;
      private String colour;
      private Integer weight;
      private String photo;
+     private String status;
+     private Double amount;
      private String description;
 
 

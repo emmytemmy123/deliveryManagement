@@ -99,14 +99,15 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Override
     public ApiResponse<String, BaseDto> addDelivery(DeliveryRequest request) {
 
-        Users existingUsers = usersRepository.findByUuid(request.getSendById())
+        Users existingUsers = usersRepository.findByUuid(request.getSenderId())
                 .orElseThrow(()->new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND));
-
 
         Delivery delivery = new Delivery();
 
         delivery.setPostedBy(existingUsers.getName());
         delivery.setUsers(existingUsers);
+        delivery.setReceiverName(request.getReceiverName());
+        delivery.setReceiverAddress(request.getReceiverAddress());
 
         Double deliveryAmount = 0.0;
         Double totalDeliveryAmount = 0.0;
@@ -127,8 +128,6 @@ public class DeliveryServiceImpl implements DeliveryService {
                 productItems.setColour(deliveryItems.getColour());
                 productItems.setWeight(deliveryItems.getWeight());
                 productItems.setPhoto(deliveryItems.getPhoto());
-                productItems.setReceiverName(deliveryItems.getReceiverName());
-                productItems.setReceiverAddress(deliveryItems.getReceiverAddress());
                 productItems.setStatus(deliveryItems.getStatus());
                 productItems.setDescription(deliveryItems.getDescription());
                 productItems.setDelivery(delivery);
@@ -145,7 +144,6 @@ public class DeliveryServiceImpl implements DeliveryService {
 
             delivery.setTotalDeliveryAmount(deliveryAmount * totalQuantity);
             delivery.setTotalAmountDue(deliveryAmount * totalQuantity );
-            delivery.setDeliveryDate(request.getDeliveryDate());
             delivery.setPaymentMode(request.getPaymentMode());
             delivery.setTotalQuantity(totalQuantity);
             delivery.setTotalWeight(totalWeight);
@@ -184,8 +182,6 @@ public class DeliveryServiceImpl implements DeliveryService {
         productItems.setColour(productItems.getColour());
         productItems.setWeight(productItems.getWeight());
         productItems.setPhoto(productItems.getPhoto());
-        productItems.setReceiverName(productItems.getReceiverName());
-        productItems.setReceiverAddress(productItems.getReceiverAddress());
         productItems.setStatus(productItems.getStatus());
         productItems.setDescription(productItems.getDescription());
 
@@ -195,7 +191,6 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         delivery.setTotalDeliveryAmount(delivery.getTotalDeliveryAmount());
         delivery.setTotalAmountDue(delivery.getTotalAmountDue());
-        delivery.setDeliveryDate(delivery.getDeliveryDate());
         delivery.setPaymentMode(delivery.getPaymentMode());
         delivery.setTotalQuantity(delivery.getTotalQuantity());
 
@@ -221,18 +216,18 @@ public class DeliveryServiceImpl implements DeliveryService {
     }
 
 
-    @Override
-    public ApiResponse<List<DeliveryResponse>, BaseDto> findDeliveryByDate(String dateCreated) {
-
-        List<Delivery> deliveryList = deliveryRepository.searchDeliveryByDateCreated(dateCreated);
-
-        if(deliveryList.isEmpty())
-            throw new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND);
-
-        return new ApiResponse<>(AppStatus.SUCCESS.label, HttpStatus.OK.value(),
-                Mapper.convertList(deliveryList, DeliveryResponse.class));
-
-    }
+//    @Override
+//    public ApiResponse<List<DeliveryResponse>, BaseDto> findDeliveryByDate(String dateCreated) {
+//
+//        List<Delivery> deliveryList = deliveryRepository.searchDeliveryByDateCreated(dateCreated);
+//
+//        if(deliveryList.isEmpty())
+//            throw new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND);
+//
+//        return new ApiResponse<>(AppStatus.SUCCESS.label, HttpStatus.OK.value(),
+//                Mapper.convertList(deliveryList, DeliveryResponse.class));
+//
+//    }
 
 
 

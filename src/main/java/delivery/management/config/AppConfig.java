@@ -25,13 +25,6 @@ public class AppConfig implements WebMvcConfigurer{
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 
-//    @Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//
-//        registry.addMapping("/**");
-//
-//    }
-
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
@@ -41,10 +34,10 @@ public class AppConfig implements WebMvcConfigurer{
 
                 registry.addMapping("/**")
                         .allowedOrigins("http://localhost:4200")
-                        .allowedMethods("HEAD",
-                                "GET", "POST", "PUT", "DELETE", "PATCH")
+                        .allowedMethods("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH")
                         .allowedHeaders("Access-Control-Request-Method",
-                                "Access-Control-Request-Headers", "Authorization", "Access-Control-Allow-Origin", "Cache-Control", "Content-Type");
+                                "Access-Control-Request-Headers", "Authorization",
+                                "Access-Control-Allow-Origin", "Cache-Control", "Content-Type");
             }
         };
     }
