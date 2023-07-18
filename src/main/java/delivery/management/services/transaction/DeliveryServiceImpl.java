@@ -104,7 +104,14 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         Delivery delivery = new Delivery();
 
-        delivery.setPostedBy(existingUsers.getName());
+        if (existingUsers.getName() != null && existingUsers.getUsersCategory().equals("sender")) {
+            delivery.setPostedBy(existingUsers.getName());
+        } else {
+            throw new RecordNotFoundException(MessageUtil.INVALID_SENDER);
+        }
+
+        delivery.setStatus("Not Completed");
+        delivery.setPaymentStatus("Not Paid");
         delivery.setUsers(existingUsers);
         delivery.setReceiverName(request.getReceiverName());
         delivery.setReceiverAddress(request.getReceiverAddress());
@@ -213,6 +220,20 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         return new ApiResponse<>(AppStatus.SUCCESS.label, HttpStatus.OK.value(),
                 Mapper.convertList(deliveryList, DeliveryResponse.class));
+    }
+
+    @Override
+    public delivery.management.dto.ApiResponse<DeliveryResponse> getDeliveryByDeliveryNo(String deliveryNo) {
+
+        Optional<Delivery> existingDeliveryOption = deliveryRepository.findDeliveryByDeliveryNo(deliveryNo);
+        if(existingDeliveryOption.isEmpty())
+            throw new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND);
+
+        Delivery delivery = existingDeliveryOption.get();
+
+        return new delivery.management.dto.ApiResponse<DeliveryResponse>(AppStatus.SUCCESS.label,
+                Mapper.convertObject(delivery, DeliveryResponse.class));
+
     }
 
 

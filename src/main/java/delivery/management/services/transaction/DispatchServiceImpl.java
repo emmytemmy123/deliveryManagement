@@ -61,24 +61,33 @@ public class DispatchServiceImpl implements DispatchService  {
     @Override
     public ApiResponse<String, BaseDto> addDispatch(DispatchDriverRequest request) {
 
-        Delivery existingDelivery = deliveryRepository.findByUuid(request.getDeliveryId())
+        Delivery existingDelivery = deliveryRepository.findDeliveryByDeliveryNo(request.getDeliveryNo())
                 .orElseThrow(() -> new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND));
 
-        Users existingUsers = usersRepository.findByUuid(request.getDriverId())
+        Users existingUsers = usersRepository.findUsersByEmail(request.getDriverEmail())
             .orElseThrow(() -> new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND));
 
         DispatchDriver dispatchDriver = new DispatchDriver();
 
         dispatchDriver.setSender(existingDelivery.getPostedBy());
+
         if (existingUsers.getName() != null && existingUsers.getUsersCategory().equals("driver")) {
             dispatchDriver.setDispatchName(existingUsers.getName());
         } else {
-//            dispatchDriver.setDispatchName("Default Name");
-            throw new RecordNotFoundException(MessageUtil.INVALID_NAME);
-
+            throw new RecordNotFoundException(MessageUtil.INVALID_DRIVER);
         }
+
         dispatchDriver.setReceiverAddress(existingDelivery.getReceiverAddress());
         dispatchDriver.setTotalAmount(existingDelivery.getTotalDeliveryAmount());
+
+        String deliveryNo = "";
+        if(deliveryNo.isEmpty())
+        dispatchDriver.setDeliveryNo(existingDelivery.getDeliveryNo());
+        else
+            return new ApiResponse<>(AppStatus.REJECT.label, HttpStatus.UNAUTHORIZED.value(),
+                    MessageHelpers.ORDER_EXISTED.message);
+
+        dispatchDriver.setDeliveryId(String.valueOf(existingDelivery.getId()));
 
         List<ProductItems> productListCopy = new ArrayList<>(existingDelivery.getProductItemsList());
         dispatchDriver.setProductList(productListCopy);
@@ -86,7 +95,10 @@ public class DispatchServiceImpl implements DispatchService  {
         dispatchDriver.setReceiverName(existingDelivery.getReceiverName());
         dispatchDriver.setDispatchDate(LocalDate.now().atStartOfDay());
 
+        existingDelivery.setStatus("dispatched");
+
         dispatchRepository.save(dispatchDriver);
+        deliveryRepository.save(existingDelivery);
 
         return new ApiResponse<>(AppStatus.SUCCESS.label, HttpStatus.OK.value(),
                 MessageHelpers.CREATE_SUCCESSFUL.message);

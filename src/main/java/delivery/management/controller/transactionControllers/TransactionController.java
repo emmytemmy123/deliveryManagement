@@ -118,6 +118,17 @@ public class TransactionController {
         return deliveryService.getDeliveryBySender(deliveryUuid);
     }
 
+
+                                //FIND_ORDER_BY_DELIVERY_NO
+
+    @GetMapping(FIND_DELIVERY_BY_DELIVERY_NO)
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
+    @ApiOperation(value = "Endpoint for fetching delivery by deliveryNo from database", response = DeliveryResponse.class, responseContainer = "List")
+    public delivery.management.dto.ApiResponse<DeliveryResponse> getDeliveryByDeliveryNo(@RequestParam String deliveryNo) {
+        return deliveryService.getDeliveryByDeliveryNo(deliveryNo);
+    }
+
+
                                         //ADD DELIVERY ORDER PAYMENT
     @PostMapping(ADD_PAYMENT)
 //    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER') ")

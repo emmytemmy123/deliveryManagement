@@ -22,6 +22,8 @@ public interface DeliveryService {
 
     ApiResponse<List<DeliveryResponse>, BaseDto> getDeliveryBySender(UUID deliveryUuid);
 
+    delivery.management.dto.ApiResponse<DeliveryResponse> getDeliveryByDeliveryNo(String deliveryNo);
+
 //    ApiResponse<List<DeliveryResponse>, BaseDto> findDeliveryByDate(String dateCreated);
 
 

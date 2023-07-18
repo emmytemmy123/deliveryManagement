@@ -108,6 +108,14 @@ public class UsersController  {
     }
 
 
+                                        //FIND USERTYPE BY EMAIL
+    @GetMapping(FIND_USERS_EMAIL)
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
+        @ApiOperation(value = "Endpoint for fetching USERS by email from database", response = UsersResponse.class)
+    public ApiResponse<UsersResponse> getUsersByEmail(@RequestParam String email) {
+        return usersService.getUsersByEmail(email);
+    }
+
 
                                         //UPDATE_USERS
 
@@ -190,6 +198,7 @@ public class UsersController  {
     public ApiResponse<AuthResponse> loginUsers(@RequestBody AuthRequest request ) {
         return usersService.loginUsers(request);
     }
+
 
 
 

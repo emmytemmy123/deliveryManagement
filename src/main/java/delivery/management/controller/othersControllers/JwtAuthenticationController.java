@@ -9,6 +9,7 @@ import delivery.management.services.others.JwtAuthenticationService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -30,6 +31,14 @@ public class JwtAuthenticationController {
     @PostMapping(AUTHENTICATE_USERS)
     @ApiOperation(value = "Endpoint for authenticate Username And Password2 ", response = String.class)
     public ResponseEntity authenticateUsernameAndPassword2(@Valid @RequestBody AuthRequest request) throws IOException {
+        return jwtAuthenticationService.authenticateUsernameAndPassword(request);
+    }
+
+
+    @PostMapping(AUTHENTICATE_ADMIN)
+//   @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR')")
+    @ApiOperation(value = "Endpoint for authenticate Username And Password2 ", response = String.class)
+    public ResponseEntity authenticateAdmin(@Valid @RequestBody AuthRequest request) throws IOException {
         return jwtAuthenticationService.authenticateUsernameAndPassword(request);
     }
 

@@ -17,6 +17,8 @@ public class Users extends BaseUser {
 
    private String driverLicense;
    private String usersCategory;
+   private String availability;
+   private String location;
    private String roles;
 
 

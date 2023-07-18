@@ -33,6 +33,7 @@ public class TransactionEndPoints {
     public static final String UPDATE_DELIVERY= DELIVERY+"/update/{id}";
     public static final String DELETE_DELIVERY= DELIVERY+"/delete/{id}";
     public static final String FIND_DELIVERY_BY_SENDER= DELIVERY+"/findDeliveryBySender";
+    public static final String FIND_DELIVERY_BY_DELIVERY_NO= DELIVERY+"/deliveryNo/{deliveryNo}";
     public static final String FIND_LISTS_OF_DELIVERY_BY_DATE= DELIVERY+"/findOrderByDate";
 
 

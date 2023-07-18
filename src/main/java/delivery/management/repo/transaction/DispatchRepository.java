@@ -21,6 +21,9 @@ public interface DispatchRepository extends JpaRepository<DispatchDriver, Long> 
     @Query("delete from DispatchDriver st where st.uuid=:recordId")
     Optional<DispatchDriver> deleteByUuid(@Param("recordId")UUID uuid);
 
+    @Query("select st from DispatchDriver st where st.deliveryNo=:deliveryNo")
+    Optional<DispatchDriver> findDispatchByDeliveryNo(@Param("deliveryNo") String deliveryNo);
+
     @Query("select st from DispatchDriver st where st.dispatchName=:dispatchName")
     List<DispatchDriver> findDispatchByDriver(@Param("dispatchName") String dispatchName);
 

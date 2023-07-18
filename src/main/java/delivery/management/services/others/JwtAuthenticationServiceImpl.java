@@ -78,6 +78,7 @@ public class JwtAuthenticationServiceImpl implements JwtAuthenticationService{
         response.put("address", userDetails.getAddress());
         response.put("city", userDetails.getCity());
         response.put("gender", userDetails.getGender());
+        response.put("roles", userDetails.getRoles());
         response.put("uuid", userDetails.getUuid());
 
         return ResponseEntity.ok(response);

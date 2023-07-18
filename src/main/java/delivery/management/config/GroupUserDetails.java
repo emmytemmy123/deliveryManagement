@@ -23,6 +23,8 @@ public class GroupUserDetails implements UserDetails {
     private String address;
     private String gender;
     private String city;
+    private String roles;
+
     private boolean isActive;
     private List<GrantedAuthority> authorities;
 
@@ -37,6 +39,7 @@ public class GroupUserDetails implements UserDetails {
         this.city = user.getCity();
         this.email = user.getEmail();
         this.uuid = user.getUuid();
+        this.roles = user.getRoles();
         this.isActive = user.isActive();
         this.authorities = Arrays.stream(user.getRoles().split(","))
                 .map(SimpleGrantedAuthority::new)
@@ -67,6 +70,9 @@ public class GroupUserDetails implements UserDetails {
     }
     public String getCity() {
         return city;
+    }
+    public String getRoles() {
+        return roles;
     }
     public UUID getUuid() {
         return uuid;

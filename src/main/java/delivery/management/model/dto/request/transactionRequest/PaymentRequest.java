@@ -13,19 +13,13 @@ import static delivery.management.utills.MessageUtil.INVALID_NAME;
 @Data
 public class PaymentRequest  {
 
-       @NotNull(message = MessageUtil.INVALID_USERNAME)
-       @NotEmpty(message = MessageUtil.INVALID_USERNAME)
-       private String paymentMode;
+       @NotNull(message = MessageUtil.INVALID_DELIVERY_NO)
+       private String dispatchDeliveryNo;
 
-       @NotNull(message = INVALID_NAME)
-       @Min(value=50, message = INVALID_NAME)
-       private Double amountPaid;
+       @NotNull(message = MessageUtil.INVALID_DELIVERY_NO)
+       private String deliveryNo;
 
-       @NotNull(message = INVALID_NAME)
-       private UUID deliveryId;
 
-       @NotNull(message = INVALID_NAME)
-       private UUID dispatchId;
 
 
 }

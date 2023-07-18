@@ -22,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -63,27 +64,30 @@ public class PaymentServiceImpl implements PaymentService {
      * * */
     public ApiResponse<String, BaseDto> addPayment(PaymentRequest request) {
 
-        Optional<Delivery> existingDelivery = Optional.ofNullable(deliveryRepository.findByUuid(request.getDeliveryId())
-                .orElseThrow(() -> new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND)));
+        Delivery existingDelivery = deliveryRepository.findDeliveryByDeliveryNo(request.getDeliveryNo())
+                .orElseThrow(() -> new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND));
 
-        Optional<DispatchDriver> existingDispatch = Optional.ofNullable(dispatchRepository.findByUuid(request.getDispatchId())
+        Optional<DispatchDriver> existingDispatch = Optional.ofNullable(dispatchRepository.findDispatchByDeliveryNo(request.getDispatchDeliveryNo())
                 .orElseThrow(() -> new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND)));
 
         Payment payment = new Payment();
 
-        payment.setPaymentMode(request.getPaymentMode());
-        payment.setPaidBy(existingDelivery.get().getReceiverName());
-        payment.setAmountPaid(request.getAmountPaid());
-        payment.setPaymentDate(String.valueOf(LocalDateTime.now()));
+        payment.setPaidBy(existingDispatch.get().getReceiverName());
+        payment.setAmountPaid(existingDispatch.get().getTotalAmount());
+        payment.setPaymentMode(existingDelivery.getPaymentMode());
+        payment.setPaymentDate(LocalDate.now().atStartOfDay());
         payment.setPaidTo(existingDispatch.get().getDispatchName());
+        payment.setStatus("paid");
+        payment.setDeliveryNo(existingDispatch.get().getDeliveryNo());
 
-        int valueToBalance = (int) (existingDelivery.get().getTotalDeliveryAmount() - (payment.getAmountPaid()));
-        payment.setStatus(valueToBalance==0? Status.PAID.label: Status.TO_BALANCE.label);
 
+        existingDelivery.setPaymentStatus("paid");
+
+        deliveryRepository.save(existingDelivery);
         paymentRepository.save(payment);
 
         return new ApiResponse<>(AppStatus.SUCCESS.label, HttpStatus.OK.value(),
-                "Record created successfully");
+                "Payment made successfully");
 
     }
 

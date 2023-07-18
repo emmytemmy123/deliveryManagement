@@ -5,6 +5,7 @@ import delivery.management.model.entity.products.ProductItems;
 import delivery.management.model.listener.BaseListener;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -22,13 +23,17 @@ public class DispatchDriver extends BaseEntity {
     private String receiverAddress;
     private String receiverName;
     private Double totalAmount;
-    private LocalDateTime dispatchDate;
+    @CreationTimestamp
+    private LocalDateTime DispatchDate;
+    private String deliveryNo;
+    private String deliveryId;
 
     @ElementCollection
     private List<ProductItems> productList;
 
     @OneToMany(mappedBy = "dispatchDriver", cascade = CascadeType.ALL)
     private List<Delivery> deliveryList;
+
 
 
     public DispatchDriver(){

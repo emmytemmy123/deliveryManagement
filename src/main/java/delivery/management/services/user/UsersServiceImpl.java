@@ -270,9 +270,6 @@ public class UsersServiceImpl implements UsersService {
 //
 
 
-
-
-
     @Override
     /**
      * @validating user by uuid
@@ -364,6 +361,21 @@ public class UsersServiceImpl implements UsersService {
 
     return  new ApiResponse<UsersResponse>(AppStatus.SUCCESS.label,
             Mapper.convertObject(users, UsersResponse.class));
+
+
+    }
+
+    @Override
+    public ApiResponse<UsersResponse> getUsersByEmail(String email) {
+
+        Optional<Users> existingUsersOption = usersRepository.findUsersByEmail(email);
+        if(existingUsersOption.isEmpty())
+            throw new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND);
+
+        Users users = existingUsersOption.get();
+
+        return  new ApiResponse<UsersResponse>(AppStatus.SUCCESS.label,
+                Mapper.convertObject(users, UsersResponse.class));
 
 
     }

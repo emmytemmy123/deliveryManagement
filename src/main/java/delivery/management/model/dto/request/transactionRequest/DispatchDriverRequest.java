@@ -12,9 +12,9 @@ import java.util.UUID;
 @Data
 public class DispatchDriverRequest {
 
-    private UUID driverId;
+    private String driverEmail;
 
-    private UUID deliveryId;
+    private String deliveryNo;
 
 
 }

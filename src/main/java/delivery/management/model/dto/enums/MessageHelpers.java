@@ -10,7 +10,10 @@ public enum MessageHelpers {
     OKAY("Operation processed successfully", "200"),
     DELETE_SUCCESSFUL("Record deleted successfully", "200"),
     UPDATE_SUCCESSFUL("Record Updated successfully", "200"),
-    CREATE_SUCCESSFUL("Record Created successfully", "200");
+    CREATE_SUCCESSFUL("Record Created successfully", "200"),
+    ORDER_EXISTED( "This order has already been dispatched", "404");
+
+
 
 
 

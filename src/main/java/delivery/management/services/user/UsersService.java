@@ -38,6 +38,9 @@ public interface UsersService {
 
     ApiResponse<UsersResponse> getUsersByUsername(String username);
 
+    ApiResponse<UsersResponse> getUsersByEmail(String email);
+
+
 
 
 

@@ -5,8 +5,10 @@ import delivery.management.model.entity.BaseEntity;
 import delivery.management.model.listener.BaseListener;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -20,7 +22,9 @@ public class Payment extends BaseEntity {
     private String paymentMode;
     private String status;
     private  String paidTo;
-    private String paymentDate;
+    @CreationTimestamp
+    private LocalDateTime PaymentDate;
+    private String deliveryNo;
 
 
 

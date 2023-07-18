@@ -24,6 +24,12 @@ public interface DeliveryRepository extends JpaRepository<Delivery, Long> {
     @Query("select st from Delivery st where st.users.uuid=:usersUuid")
     List<Delivery> findDeliveryBySender(@Param("usersUuid") UUID usersUuid);
 
+    @Query("select st from Delivery st where st.receiverName =:receiverName")
+    Optional<Delivery> findDeliveryByReceiverName(@Param("receiverName") String receiverName);
+
+    @Query("select st from Delivery st where st.deliveryNo =:deliveryNo")
+    Optional<Delivery> findDeliveryByDeliveryNo(@Param("deliveryNo") String deliveryNo);
+
 ////    @Query("select st from Delivery st where st.dateCreated=:dateCreated")
 //    @Query("SELECT p FROM Delivery p WHERE p.deliveryDate LIKE CONCAT('%',:query, '%')")
 //    List<Delivery> searchDeliveryByDateCreated(String query);
