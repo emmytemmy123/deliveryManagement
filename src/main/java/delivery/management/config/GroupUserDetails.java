@@ -20,6 +20,7 @@ public class GroupUserDetails implements UserDetails {
     private String name;
     private String email;
     private String phone;
+    private String photo;
     private String address;
     private String gender;
     private String city;
@@ -34,6 +35,7 @@ public class GroupUserDetails implements UserDetails {
         this.usersCategory = user.getUsersCategory();
         this.name = user.getName();
         this.phone = user.getPhone();
+        this.photo = user.getPhoto();
         this.address = user.getAddress();
         this.gender = user.getGender();
         this.city = user.getCity();
@@ -51,17 +53,15 @@ public class GroupUserDetails implements UserDetails {
         return authorities;
     }
 
-
     public String getUsersCategory() {return usersCategory;}
-    public String getName() {
-        return name;
-    }
+    public String getName() {return name;}
     public String getEmail() {
         return email;
     }
     public String getPhone() {
         return phone;
     }
+    public String getPhoto() {return photo;}
     public String getAddress() {
         return address;
     }

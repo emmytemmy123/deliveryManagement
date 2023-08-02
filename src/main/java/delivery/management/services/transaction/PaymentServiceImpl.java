@@ -9,10 +9,12 @@ import delivery.management.model.dto.enums.Status;
 import delivery.management.model.dto.request.transactionRequest.PaymentRequest;
 import delivery.management.model.dto.response.othersResponse.ApiResponse;
 import delivery.management.model.dto.response.transactionResponse.DeliveryResponse;
+import delivery.management.model.dto.response.transactionResponse.DispatchResponse;
 import delivery.management.model.dto.response.transactionResponse.PaymentResponse;
 import delivery.management.model.entity.transaction.Delivery;
 import delivery.management.model.entity.transaction.DispatchDriver;
 import delivery.management.model.entity.transaction.Payment;
+import delivery.management.model.entity.user.Users;
 import delivery.management.repo.transaction.DeliveryRepository;
 import delivery.management.repo.transaction.DispatchRepository;
 import delivery.management.repo.transaction.PaymentRepository;
@@ -55,6 +57,19 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
 
+    /**
+     * @Validating existingPaymentOptional by deliveryNo
+     * @Validate if the List of existingPaymentOptional is empty otherwise return payment has been made
+     * * */
+    private void validateDuplicationPayment(String deliveryNo){
+        Optional<Payment> existingPaymentOptional = paymentRepository.findPaymentByDeliveryNo(deliveryNo);
+        if(existingPaymentOptional.isPresent())
+            throw new RecordNotFoundException("Payment has already been made");
+
+    }
+
+
+
     @Override
     /**
      * @Validate that no duplicate Payment is allowed
@@ -63,6 +78,8 @@ public class PaymentServiceImpl implements PaymentService {
      * @return success message
      * * */
     public ApiResponse<String, BaseDto> addPayment(PaymentRequest request) {
+
+        validateDuplicationPayment(request.getDeliveryNo());
 
         Delivery existingDelivery = deliveryRepository.findDeliveryByDeliveryNo(request.getDeliveryNo())
                 .orElseThrow(() -> new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND));
@@ -77,11 +94,11 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setPaymentMode(existingDelivery.getPaymentMode());
         payment.setPaymentDate(LocalDate.now().atStartOfDay());
         payment.setPaidTo(existingDispatch.get().getDispatchName());
-        payment.setStatus("paid");
+        payment.setStatus("To be Confirm");
         payment.setDeliveryNo(existingDispatch.get().getDeliveryNo());
 
-
-        existingDelivery.setPaymentStatus("paid");
+        existingDelivery.setPaymentStatus("To be Confirm");
+        existingDelivery.setDriverStatus("Payment Made");
 
         deliveryRepository.save(existingDelivery);
         paymentRepository.save(payment);
@@ -93,7 +110,6 @@ public class PaymentServiceImpl implements PaymentService {
 
 
 
-
     @Override
     public ApiResponse<List<PaymentResponse>, BaseDto> getPaymentBySender(UUID paymentUuid) {
 
@@ -102,6 +118,56 @@ public class PaymentServiceImpl implements PaymentService {
 
     }
 
+    @Override
+    public delivery.management.dto.ApiResponse<PaymentResponse> getPaymentByDeliveryNo(String deliveryNo) {
+
+        Optional<Payment> existingPaymentOption = paymentRepository.findPaymentByDeliveryNo(deliveryNo);
+        if(existingPaymentOption.isEmpty())
+            throw new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND);
+
+        Payment payment = existingPaymentOption.get();
+
+        return new delivery.management.dto.ApiResponse<PaymentResponse>(AppStatus.SUCCESS.label,
+                Mapper.convertObject(payment, PaymentResponse.class));
+
+    }
+
+
+    /**
+     * @validating paymentOptional by uuid
+     * @Validate if the List of payment is empty otherwise return record not found
+     * @return paymentOptional
+     * * */
+    private Payment validatePayment(UUID paymentUuid) {
+        Optional<Payment> paymentOptional = paymentRepository.findByUuid(paymentUuid);
+        if (paymentOptional.isEmpty())
+            throw new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND);
+        return paymentOptional.get();
+    }
+
+
+    @Override
+    public delivery.management.dto.ApiResponse<String> updatePayment(UUID paymentUuid, PaymentRequest request) {
+
+        Delivery existingDelivery = deliveryRepository.findDeliveryByDeliveryNo(request.getDeliveryNo())
+                .orElseThrow(() -> new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND));
+
+        Optional<DispatchDriver> existingDispatch = Optional.ofNullable(dispatchRepository.findDispatchByDeliveryNo(request.getDispatchDeliveryNo())
+                .orElseThrow(() -> new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND)));
+
+        Payment payment = validatePayment(paymentUuid);
+
+        payment.setStatus("paid");
+        existingDelivery.setPaymentStatus("paid");
+        existingDelivery.setDriverStatus("completed");
+        existingDelivery.setStatus("completed");
+
+        paymentRepository.save(payment);
+
+        return new delivery.management.dto.ApiResponse<>(AppStatus.SUCCESS.label,
+                "Payment Updated Successfully");
+
+    }
 
 
 }

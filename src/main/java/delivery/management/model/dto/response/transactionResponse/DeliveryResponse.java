@@ -14,6 +14,7 @@ public class DeliveryResponse extends BaseDto {
      private Double totalDeliveryAmount;
      private Double totalAmountDue;
      private String status;
+     private String driverStatus;
      private String paymentStatus;
      private Integer serialNo;
      private String paymentMode;

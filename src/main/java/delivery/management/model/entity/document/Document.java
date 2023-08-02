@@ -21,6 +21,7 @@ public class Document extends BaseEntity {
     private String size;
     private String description;
     private String filePath;
+    private String userUuid;
 
 
 

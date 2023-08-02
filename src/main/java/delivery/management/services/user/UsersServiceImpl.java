@@ -15,6 +15,7 @@ import delivery.management.model.entity.user.Users;
 import delivery.management.model.entity.user.UsersType;
 import delivery.management.repo.user.UsersRepository;
 import delivery.management.repo.user.UsersTypeRepository;
+import delivery.management.services.others.FileStorageService;
 import delivery.management.services.others.JwtAuthenticationServiceImpl;
 import delivery.management.utills.EmailUtils;
 import delivery.management.utills.JwtUtil;
@@ -25,8 +26,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -41,6 +44,7 @@ public class UsersServiceImpl implements UsersService {
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
+    private final FileStorageService fileStorageService;
 
     String username;
 
@@ -106,31 +110,29 @@ public class UsersServiceImpl implements UsersService {
      * Create user definition and save
      * @return success message
      * * */
-    public ApiResponse<String> addUsers(UsersRequest request) {
+    public ApiResponse<String> addUsers(UsersRequest request) throws IOException {
 
         validateDuplicationUsers(request.getEmail());
 
         UsersType existingUsersType = usersTypeRepository.findByName(request.getAccountType())
                 .orElseThrow(()->new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND));
 
-        Users user = new Users();
+            Users user = new Users();
 
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setAddress(request.getAddress());
-        user.setCountry(request.getCountry());
-        user.setCity(request.getCity());
-        user.setGender(request.getGender());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setPhone(request.getPhone());
-        user.setUsername(request.getUsername());
-        user.setPhoto(request.getPhoto());
-        user.setUsersType(existingUsersType);
-        user.setUsersCategory(existingUsersType.getName());
-        user.setRoles(UserConstant.DEFAULT_ROLE);//USER
+            user.setName(request.getName());
+            user.setEmail(request.getEmail());
+            user.setAddress(request.getAddress());
+            user.setCountry(request.getCountry());
+            user.setCity(request.getCity());
+            user.setGender(request.getGender());
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+            user.setPhone(request.getPhone());
+            user.setUsername(request.getUsername());
+            user.setUsersType(existingUsersType);
+            user.setUsersCategory(existingUsersType.getName());
+            user.setRoles(UserConstant.DEFAULT_ROLE);//USER
 
-
-        usersRepository.save(user);
+            usersRepository.save(user);
 
             return new ApiResponse("Record Added successfully", AppStatus.SUCCESS.label,
                     HttpStatus.OK.value());
@@ -178,45 +180,60 @@ public class UsersServiceImpl implements UsersService {
      * Create the user definition and update
      * @return a Success Message
      * * */
-    public ApiResponse<String> updateUsers(UUID userUuid, UsersRequest request) {
+    public ApiResponse<String> updateUsers(UUID userUuid,UsersRequest request ) {
 
             Users user = validateUser(userUuid);
 
-        if (request.getName() != null) {
-            user.setName(request.getName());
-        }
-        if (request.getEmail() != null) {
-            user.setEmail(request.getEmail());
-        }
-        if (request.getAddress() != null) {
-            user.setAddress(request.getAddress());
-        }
-        if (request.getCountry() != null) {
-            user.setCountry(request.getCountry());
-        }
-        if (request.getCity() != null) {
-            user.setCity(request.getCity());
-        }
-        if (request.getGender() != null) {
-            user.setGender(request.getGender());
-        }
-        if (request.getPhone() != null) {
-            user.setPhone(request.getPhone());
-        }
-        if (request.getUsername() != null) {
-            user.setUsername(request.getUsername());
-        }
-        if (request.getPhoto() != null) {
-            user.setPhoto(request.getPhoto());
-        }
-        if (request.getDriverLicense() != null) {
-            user.setDriverLicense(request.getDriverLicense());
+            if (request.getName() != null) {
+                user.setName(request.getName());
+            }
+            if (request.getEmail() != null) {
+                user.setEmail(request.getEmail());
+            }
+            if (request.getAddress() != null) {
+                user.setAddress(request.getAddress());
+            }
+            if (request.getCountry() != null) {
+                user.setCountry(request.getCountry());
+            }
+            if (request.getCity() != null) {
+                user.setCity(request.getCity());
+            }
+            if (request.getGender() != null) {
+                user.setGender(request.getGender());
+            }
+            if (request.getPhone() != null) {
+                user.setPhone(request.getPhone());
+            }
+            if (request.getUsername() != null) {
+                user.setUsername(request.getUsername());
+            }
+
+            if (request.getDriverLicense() != null) {
+                user.setDriverLicense(request.getDriverLicense());
+            }
+
+
+            usersRepository.save(user);
+
+            return new ApiResponse<>(AppStatus.SUCCESS.label, "Record Updated Successfully");
+
         }
 
+    @Override
+    public ApiResponse<String> updateUsersPhoto(UUID userUuid, MultipartFile photoFile) {
+
+        Users user = validateUser(userUuid);
+
+        if (photoFile != null && !photoFile.isEmpty()) {
+            String fileName = fileStorageService.storeFile(photoFile);
+            user.setPhoto(fileName);
+        }
 
         usersRepository.save(user);
-            return new ApiResponse<>(AppStatus.SUCCESS.label, "Record Updated Successfully");
-        }
+        return new ApiResponse<>(AppStatus.SUCCESS.label, "Record Updated Successfully");
+
+    }
 
 
     /**

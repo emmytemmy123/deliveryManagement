@@ -110,7 +110,8 @@ public class DeliveryServiceImpl implements DeliveryService {
             throw new RecordNotFoundException(MessageUtil.INVALID_SENDER);
         }
 
-        delivery.setStatus("Not Completed");
+        delivery.setStatus("pending");
+        delivery.setDriverStatus("pending");
         delivery.setPaymentStatus("Not Paid");
         delivery.setUsers(existingUsers);
         delivery.setReceiverName(request.getReceiverName());
@@ -155,8 +156,7 @@ public class DeliveryServiceImpl implements DeliveryService {
             delivery.setTotalQuantity(totalQuantity);
             delivery.setTotalWeight(totalWeight);
 
-
-        delivery.setProductItemsList(productItemsList);
+            delivery.setProductItemsList(productItemsList);
 
             deliveryRepository.save(delivery);
 
@@ -221,6 +221,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         return new ApiResponse<>(AppStatus.SUCCESS.label, HttpStatus.OK.value(),
                 Mapper.convertList(deliveryList, DeliveryResponse.class));
     }
+
 
     @Override
     public delivery.management.dto.ApiResponse<DeliveryResponse> getDeliveryByDeliveryNo(String deliveryNo) {

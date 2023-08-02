@@ -38,9 +38,6 @@ public class UsersRequest {
         @NotEmpty(message = MessageUtil.INVALID_PHONE)
         private String phone;
 
-//        @NotNull(message = MessageUtil.INVALID_PHONE)
-//        @NotEmpty(message = MessageUtil.INVALID_PHONE)
-        private String photo;
 
 //        @NotNull(message = MessageUtil.INVALID_PASSWORD)
 //        @NotEmpty(message = MessageUtil.INVALID_PASSWORD)

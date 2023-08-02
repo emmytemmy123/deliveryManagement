@@ -17,6 +17,8 @@ public class TransactionEndPoints {
     public static final String FIND_LISTS_OF_PAYMENT_BY_DATE= PAYMENT+"/findPaymentByDate";
     public static final String FIND_PAYMENT_BY_SALES_PERSON= PAYMENT+"/findPaymentBySalesPerson";
     public static final String FIND_PAYMENT_BY_CUSTOMER= PAYMENT+"/findPaymentByCustomer";
+    public static final String FIND_PAYMENT_BY_DELIVERY_NO= PAYMENT+"/deliveryNo";
+
 
 
     public static final String ORDER_ITEMS="/orderItems";
@@ -41,6 +43,11 @@ public class TransactionEndPoints {
     public static final String FIND_DISPATCH=DISPATCH+"/list";
     public static final String ADD_DISPATCH= DISPATCH+"/add";
     public static final String FIND_DISPATCH_BY_SENDER= DISPATCH+"/findDispatchBySender";
+    public static final String FIND_DISPATCH_BY_DELIVERY_NO= DISPATCH+"/deliveryNo";
+    public static final String FIND_DISPATCH_BY_DISPATCH_NAME= DISPATCH+"/dispatchName";
+    public static final String FIND_DISPATCH_BY_EMAIL= DISPATCH+"/email/{email}";
+
+
 
 
 

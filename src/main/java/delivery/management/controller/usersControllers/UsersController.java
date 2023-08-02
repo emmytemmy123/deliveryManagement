@@ -2,7 +2,6 @@ package delivery.management.controller.usersControllers;
 
 import delivery.management.dto.ApiResponse;
 import delivery.management.model.dto.request.othersRequest.AuthRequest;
-import delivery.management.model.dto.request.othersRequest.AuthRequest2;
 import delivery.management.model.dto.request.userRequest.*;
 import delivery.management.model.dto.response.UserTypeResponse;
 import delivery.management.model.dto.response.othersResponse.AuthResponse;
@@ -11,12 +10,15 @@ import delivery.management.services.user.UsersService;
 import io.swagger.annotations.ApiOperation;
 import delivery.management.model.dto.response.userResponse.UsersResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import delivery.management.utills.EndpointParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -59,10 +61,12 @@ public class UsersController  {
 
     @PostMapping(ADD_USERS)
 //    @PreAuthorize("hasAuthority('ROLE_ADMIN') ")
-    @ApiOperation(value = "Endpoint for adding new user to database", response = String.class)
-    public ApiResponse<String> addUsers(@Valid @RequestBody UsersRequest request) {
+    @ApiOperation(value = "Endpoint for adding new user to database", response = String.class,
+            produces = "application/json", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<String> addUsers(@Valid @RequestBody UsersRequest request) throws IOException {
         return usersService.addUsers(request);
     }
+
 
     @PostMapping(ADD_USERTYPE)
     @ApiOperation(value = "Endpoint for adding new userType to database", response = String.class)
@@ -125,6 +129,14 @@ public class UsersController  {
     public ApiResponse<String> updateUsers(@PathVariable(value = "uuid") UUID userUuid,
                                            @RequestBody UsersRequest request) {
         return usersService.updateUsers(userUuid, request);
+    }
+
+    @PutMapping(UPDATE_USERS_PHOTO)
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
+    @ApiOperation(value = "Endpoint for updating usersPhoto by id from database", response = String.class)
+    public ApiResponse<String> updateUsersPhoto(@PathVariable("uuid") UUID userUuid,
+                                                @RequestParam(required = false) MultipartFile photo) {
+        return usersService.updateUsersPhoto(userUuid, photo );
     }
 
     @PutMapping(UPDATE_USERTYPE)

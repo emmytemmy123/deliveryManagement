@@ -15,6 +15,7 @@ public class UsersEndPoints {
     public static final String FIND_USERS_EMAIL= USERS+"/email/{email}";
     public static final String FIND_USERS_BY_ID= USERS+"/get/{uuid}";
     public static final String UPDATE_USERS= USERS+"/update/{uuid}";
+    public static final String UPDATE_USERS_PHOTO= USERS+"/updateUsersPhoto/{uuid}";
     public static final String LOGIN_USERS= USERS+"loginUsers";
     public static final String LOGIN_ADMIN= USERS+"loginAdmin";
     public static final String RESET_USERS_PASSWORD= USERS+"/resetPassword";

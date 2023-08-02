@@ -1,5 +1,7 @@
 package delivery.management.controller.othersControllers;
 
+import delivery.management.model.dto.request.othersRequest.DocumentRequest;
+import delivery.management.model.dto.request.transactionRequest.DeliveryRequest;
 import delivery.management.services.others.UploadService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -13,6 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/uploader")
@@ -22,7 +25,7 @@ public class FileUploaderController {
    private final UploadService uploadService;
 
     @PostMapping("/upload/files")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
     @ApiOperation(value = "Make a POST request to upload the file",
             produces = "application/json", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity uploadFile(
@@ -30,14 +33,13 @@ public class FileUploaderController {
             //@RequestParam(value = "merchantid", required = true) String merchantid,
             //@RequestParam(value = "types", required = true) String types,
             @ApiParam(name = "file", value = "Select the file to Upload", required = true)
-            @RequestPart("file") MultipartFile file
-    ) throws IOException {
+            @RequestPart("file") MultipartFile file) throws IOException {
        return uploadService.uploadFile( file);
 
     }
 
     @ApiOperation(value = "Endpoint for downloading file")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
     @GetMapping("/file/download")
     public StreamingResponseBody downloadPhoto(@RequestParam("filename") String name, @RequestParam(value="display", defaultValue = "attachment")String display,
                                            HttpServletResponse response) throws IOException {
@@ -46,7 +48,7 @@ public class FileUploaderController {
 
 
     @ApiOperation(value = "Endpoint for previewing downloading file")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
     @GetMapping("/file/preview")
     public StreamingResponseBody previewPhoto(@RequestParam("filename") String name, HttpServletResponse response) throws IOException {
         return uploadService.previewFile(name,  response);

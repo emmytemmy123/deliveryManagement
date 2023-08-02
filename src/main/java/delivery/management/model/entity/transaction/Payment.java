@@ -23,7 +23,7 @@ public class Payment extends BaseEntity {
     private String status;
     private  String paidTo;
     @CreationTimestamp
-    private LocalDateTime PaymentDate;
+    private LocalDateTime paymentDate;
     private String deliveryNo;
 
 

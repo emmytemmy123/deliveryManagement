@@ -1,9 +1,13 @@
 package delivery.management.services.others;
 
+import delivery.management.exception.RecordNotFoundException;
 import delivery.management.model.dto.BaseDto;
+import delivery.management.model.dto.request.othersRequest.DocumentRequest;
 import delivery.management.model.dto.response.othersResponse.ApiResponse;
 import delivery.management.model.entity.document.Document;
+import delivery.management.model.entity.user.Users;
 import delivery.management.repo.others.DocumentRepository;
+import delivery.management.repo.user.UsersRepository;
 import delivery.management.utills.MessageUtil;
 import delivery.management.utills.Utils;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +22,7 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -26,12 +31,13 @@ public class UploadServiceImpl implements UploadService {
 
     private final DocumentRepository documentRepository;
     private final ServletContext servletContext;
+    private final UsersRepository usersRepository;
 
     @Value("${FILE_UPLOAD_LOCATION}")
     private String uploadLocation;
 
     @Override
-    public ResponseEntity uploadFile( MultipartFile file) throws IOException {
+    public ResponseEntity uploadFile(MultipartFile file) throws IOException {
 
         String files = Utils.baseDir(uploadLocation).getPath() + File.separator + file.getOriginalFilename().replaceAll("[\\\\/><\\|\\s\"'{}()\\[\\]]+", "_");
         File testFile = new File(files);
@@ -42,15 +48,25 @@ public class UploadServiceImpl implements UploadService {
 //        document.setName(testFile.getName());
 //        documentList.add(document);
 
+//        Users existingUsers = usersRepository.findByUuid(request.getUserUuid())
+//                .orElseThrow(()->new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND));
+
+
         Document document = new Document();
         document.setName(file.getOriginalFilename());
         document.setType(file.getContentType());
         document.setSize(String.valueOf(file.getSize()));
         document.setDescription(file.getName());
         document.setFilePath(files);
+//        document.setUserUuid(String.valueOf(existingUsers));
 
         file.transferTo(new File(files));
 
+
+//        Users users = existingUsers;
+//        users.setPhoto(document.getName());
+
+//        usersRepository.save(users);
         documentRepository.save(document);
         return ResponseEntity.ok(new ApiResponse<String, BaseDto>(MessageUtil.SUCCESS, "files Upload Successfully"));
 

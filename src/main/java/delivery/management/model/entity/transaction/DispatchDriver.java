@@ -27,8 +27,9 @@ public class DispatchDriver extends BaseEntity {
     private LocalDateTime DispatchDate;
     private String deliveryNo;
     private String deliveryId;
+    private String email;
 
-    @ElementCollection
+    @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL)
     private List<ProductItems> productList;
 
     @OneToMany(mappedBy = "dispatchDriver", cascade = CascadeType.ALL)

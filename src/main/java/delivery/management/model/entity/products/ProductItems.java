@@ -2,6 +2,7 @@ package delivery.management.model.entity.products;
 
 import delivery.management.model.entity.BaseEntity;
 import delivery.management.model.entity.transaction.Delivery;
+import delivery.management.model.entity.transaction.DispatchDriver;
 import delivery.management.model.listener.BaseListener;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,6 +32,10 @@ public class ProductItems extends BaseEntity {
     @JoinColumn(name = "deliveryId", insertable = true, updatable = true)
     private Delivery delivery;
 
+
+//    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @JoinColumn(name = "dispatchId", insertable = true, updatable = true)
+//    private DispatchDriver dispatch;
 
 
 

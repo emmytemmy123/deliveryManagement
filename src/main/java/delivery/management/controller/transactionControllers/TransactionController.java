@@ -5,9 +5,11 @@ import delivery.management.model.dto.BaseDto;
 import delivery.management.model.dto.request.transactionRequest.DeliveryRequest;
 import delivery.management.model.dto.request.transactionRequest.DispatchDriverRequest;
 import delivery.management.model.dto.request.transactionRequest.PaymentRequest;
+import delivery.management.model.dto.request.userRequest.UsersRequest;
 import delivery.management.model.dto.response.othersResponse.ApiResponse;
 import delivery.management.model.dto.response.transactionResponse.DeliveryResponse;
 import delivery.management.model.dto.response.transactionResponse.DispatchResponse;
+import delivery.management.model.dto.response.transactionResponse.PaymentResponse;
 import delivery.management.services.transaction.DeliveryService;
 import delivery.management.services.transaction.DispatchService;
 import delivery.management.services.transaction.PaymentService;
@@ -22,7 +24,9 @@ import java.util.List;
 import java.util.UUID;
 
 import static delivery.management.utills.EndPoints.TransactionEndPoints.*;
+import static delivery.management.utills.EndPoints.UsersEndPoints.UPDATE_USERS;
 
+@CrossOrigin
 @RestController
 @RequestMapping(transaction)
 @RequiredArgsConstructor
@@ -49,6 +53,15 @@ public class TransactionController {
     public ApiResponse<List<DispatchResponse>, BaseDto> getListOfDispatch(@RequestParam(value = EndpointParam.PAGE, defaultValue = EndpointParam.PAGE_DEFAULT) int page,
                                                                           @RequestParam(value = EndpointParam.SIZE, defaultValue = EndpointParam.SIZE_DEFAULT) int size) {
         return dispatchService.getListOfDispatch(page, size);
+    }
+
+
+    @GetMapping(FIND_PAYMENT)
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
+    @ApiOperation(value = "Endpoint for retrieving lists of payment", response = PaymentResponse.class, responseContainer = "List")
+    public ApiResponse<List<PaymentResponse>, BaseDto> getListOfPayment(@RequestParam(value = EndpointParam.PAGE, defaultValue = EndpointParam.PAGE_DEFAULT) int page,
+                                                                          @RequestParam(value = EndpointParam.SIZE, defaultValue = EndpointParam.SIZE_DEFAULT) int size) {
+        return paymentService.getListOfPayment(page, size);
     }
 
 
@@ -94,6 +107,13 @@ public class TransactionController {
         return deliveryService.updateDelivery(productUuid, request);
     }
 
+    @PutMapping(UPDATE_PAYMENT)
+    @ApiOperation(value = "Endpoint for updating payment by id from database", response = String.class)
+    public delivery.management.dto.ApiResponse<String> updatePayment(@PathVariable(value = "id") UUID paymentUuid,
+                                                                     @RequestBody PaymentRequest request) {
+        return paymentService.updatePayment(paymentUuid, request);
+    }
+
 
 
 
@@ -112,14 +132,14 @@ public class TransactionController {
                                         //FIND_ORDER_BY_CUSTOMER
 
     @GetMapping(FIND_DELIVERY_BY_SENDER)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
     @ApiOperation(value = "Endpoint for fetching delivery by sender from database", response = DeliveryResponse.class, responseContainer = "List")
     public ApiResponse<List<DeliveryResponse>, BaseDto> getDeliveryBySender(@RequestParam UUID deliveryUuid) {
         return deliveryService.getDeliveryBySender(deliveryUuid);
     }
 
 
-                                //FIND_ORDER_BY_DELIVERY_NO
+                                //FIND_DELIVERY_BY_DELIVERY_NO
 
     @GetMapping(FIND_DELIVERY_BY_DELIVERY_NO)
 //    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
@@ -127,6 +147,48 @@ public class TransactionController {
     public delivery.management.dto.ApiResponse<DeliveryResponse> getDeliveryByDeliveryNo(@RequestParam String deliveryNo) {
         return deliveryService.getDeliveryByDeliveryNo(deliveryNo);
     }
+
+
+
+                                        //FIND_DELIVERY_BY_EMAIL
+
+    @GetMapping(FIND_DISPATCH_BY_EMAIL)
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
+    @ApiOperation(value = "Endpoint for fetching delivery by email from database", response = DispatchResponse.class, responseContainer = "List")
+    public delivery.management.dto.ApiResponse<DispatchResponse> getDeliveryByEmail(@RequestParam String email) {
+        return dispatchService.getDispatchByEmail(email);
+    }
+
+
+                                    //FIND_DISPATCH_BY_DELIVERY_NO
+
+    @GetMapping(FIND_DISPATCH_BY_DISPATCH_NAME)
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
+    @ApiOperation(value = "Endpoint for fetching dispatch by dispatchName from database", response = DispatchResponse.class, responseContainer = "List")
+    public ApiResponse<List<DispatchResponse>, BaseDto> getDispatchByDispatchName(@RequestParam String dispatchName) {
+        return dispatchService.getListOfDispatchByName(dispatchName);
+    }
+
+
+                                    //FIND_DISPATCH_BY_DELIVERY_NO
+
+    @GetMapping(FIND_DISPATCH_BY_DELIVERY_NO)
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
+    @ApiOperation(value = "Endpoint for fetching dispatch by deliveryNo from database", response = DispatchResponse.class, responseContainer = "List")
+    public delivery.management.dto.ApiResponse<DispatchResponse> getDispatchByDeliveryNo(@RequestParam String deliveryNo) {
+        return dispatchService.getDispatchByDeliveryNo(deliveryNo);
+    }
+
+
+                            //FIND_DISPATCH_BY_DELIVERY_NO
+
+    @GetMapping(FIND_PAYMENT_BY_DELIVERY_NO)
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
+    @ApiOperation(value = "Endpoint for fetching payment by deliveryNo from database", response = PaymentResponse.class, responseContainer = "List")
+    public delivery.management.dto.ApiResponse<PaymentResponse> getPaymentByDeliveryNo(@RequestParam String deliveryNo) {
+        return paymentService.getPaymentByDeliveryNo(deliveryNo);
+    }
+
 
 
                                         //ADD DELIVERY ORDER PAYMENT

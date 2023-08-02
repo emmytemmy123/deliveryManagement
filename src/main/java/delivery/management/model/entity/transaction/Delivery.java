@@ -30,6 +30,7 @@ public class Delivery extends BaseEntity {
     private String postedBy;
     private String receiverName;
     private String receiverAddress;
+    private String driverStatus;
 
 
     @ManyToOne

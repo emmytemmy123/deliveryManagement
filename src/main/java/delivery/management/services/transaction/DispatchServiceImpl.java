@@ -8,13 +8,11 @@ import delivery.management.model.dto.enums.AppStatus;
 import delivery.management.model.dto.enums.MessageHelpers;
 import delivery.management.model.dto.request.transactionRequest.DispatchDriverRequest;
 import delivery.management.model.dto.response.othersResponse.ApiResponse;
-import delivery.management.model.dto.response.transactionResponse.DeliveryResponse;
 import delivery.management.model.dto.response.transactionResponse.DispatchResponse;
 import delivery.management.model.entity.products.ProductItems;
 import delivery.management.model.entity.transaction.Delivery;
 import delivery.management.model.entity.transaction.DispatchDriver;
 import delivery.management.model.entity.user.Users;
-import delivery.management.model.entity.user.UsersType;
 import delivery.management.repo.transaction.DeliveryRepository;
 import delivery.management.repo.transaction.DispatchRepository;
 import delivery.management.repo.user.UsersRepository;
@@ -58,8 +56,25 @@ public class DispatchServiceImpl implements DispatchService  {
 
     }
 
+
+
+    /**
+     * @Validating existingDispatchOptional by deliveryNo
+     * @Validate if the List of existingDispatchOptional is empty otherwise return Dispatch has been made
+     * * */
+    private void validateDuplicationDispatch(String deliveryNo){
+        Optional<DispatchDriver> existingDispatchOptional = dispatchRepository.findDispatchByDeliveryNo(deliveryNo);
+        if(existingDispatchOptional.isPresent())
+            throw new RecordNotFoundException("Dispatch is in progress");
+
+    }
+
+
+
     @Override
     public ApiResponse<String, BaseDto> addDispatch(DispatchDriverRequest request) {
+
+        validateDuplicationDispatch(request.getDeliveryNo());
 
         Delivery existingDelivery = deliveryRepository.findDeliveryByDeliveryNo(request.getDeliveryNo())
                 .orElseThrow(() -> new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND));
@@ -79,23 +94,19 @@ public class DispatchServiceImpl implements DispatchService  {
 
         dispatchDriver.setReceiverAddress(existingDelivery.getReceiverAddress());
         dispatchDriver.setTotalAmount(existingDelivery.getTotalDeliveryAmount());
-
-        String deliveryNo = "";
-        if(deliveryNo.isEmpty())
         dispatchDriver.setDeliveryNo(existingDelivery.getDeliveryNo());
-        else
-            return new ApiResponse<>(AppStatus.REJECT.label, HttpStatus.UNAUTHORIZED.value(),
-                    MessageHelpers.ORDER_EXISTED.message);
-
         dispatchDriver.setDeliveryId(String.valueOf(existingDelivery.getId()));
+        dispatchDriver.setReceiverName(existingDelivery.getReceiverName());
+        dispatchDriver.setDispatchDate(LocalDate.now().atStartOfDay());
+        dispatchDriver.setEmail(existingUsers.getEmail());
 
         List<ProductItems> productListCopy = new ArrayList<>(existingDelivery.getProductItemsList());
         dispatchDriver.setProductList(productListCopy);
 
-        dispatchDriver.setReceiverName(existingDelivery.getReceiverName());
-        dispatchDriver.setDispatchDate(LocalDate.now().atStartOfDay());
+//        dispatchDriver.setProductList(existingDelivery.getProductItemsList());
 
-        existingDelivery.setStatus("dispatched");
+        existingDelivery.setStatus("In Progress...");
+        existingDelivery.setDriverStatus("In Progress...");
 
         dispatchRepository.save(dispatchDriver);
         deliveryRepository.save(existingDelivery);
@@ -106,11 +117,23 @@ public class DispatchServiceImpl implements DispatchService  {
     }
 
 
+    @Override
+    public delivery.management.dto.ApiResponse<DispatchResponse> getDispatchByDeliveryNo(String deliveryNo) {
+
+        Optional<DispatchDriver> existingDispatchOption = dispatchRepository.findDispatchByDeliveryNo(deliveryNo);
+        if(existingDispatchOption.isEmpty())
+            throw new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND);
+
+        DispatchDriver dispatchDriver = existingDispatchOption.get();
+
+        return new delivery.management.dto.ApiResponse<DispatchResponse>(AppStatus.SUCCESS.label,
+                Mapper.convertObject(dispatchDriver, DispatchResponse.class));
+    }
 
     @Override
-        public ApiResponse<List<DispatchResponse>, BaseDto> getDispatchByName(String dispatchName) {
+    public ApiResponse<List<DispatchResponse>, BaseDto> getListOfDispatchByName(String dispatchName) {
 
-        List<DispatchDriver> dispatchDriverList = dispatchRepository.findDispatchByDriver(dispatchName);
+        List<DispatchDriver> dispatchDriverList = dispatchRepository.findDispatchByDispatchName(dispatchName);
 
         if(dispatchDriverList.isEmpty())
             throw new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND);
@@ -120,6 +143,21 @@ public class DispatchServiceImpl implements DispatchService  {
 
     }
 
+
+    @Override
+    public delivery.management.dto.ApiResponse<DispatchResponse> getDispatchByEmail(String email) {
+
+        Optional<DispatchDriver> existingDispatchOption = dispatchRepository.findDispatchByEmail(email);
+
+        if(existingDispatchOption.isEmpty())
+            throw new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND);
+
+        DispatchDriver dispatchDriver = existingDispatchOption.get();
+
+        return new delivery.management.dto.ApiResponse<DispatchResponse>(AppStatus.SUCCESS.label,
+                Mapper.convertObject(dispatchDriver, DispatchResponse.class));
+
+    }
 
 
 }

@@ -25,7 +25,10 @@ public interface DispatchRepository extends JpaRepository<DispatchDriver, Long> 
     Optional<DispatchDriver> findDispatchByDeliveryNo(@Param("deliveryNo") String deliveryNo);
 
     @Query("select st from DispatchDriver st where st.dispatchName=:dispatchName")
-    List<DispatchDriver> findDispatchByDriver(@Param("dispatchName") String dispatchName);
+    List<DispatchDriver> findDispatchByDispatchName(@Param("dispatchName") String dispatchName);
+
+    @Query("select st from DispatchDriver st where st.email=:email")
+    Optional<DispatchDriver> findDispatchByEmail(@Param("email") String email);
 
 //    //    @Query("select st from Delivery st where st.dateCreated=:dateCreated")
 //    @Query("SELECT p FROM Delivery p WHERE p.deliveryDate LIKE CONCAT('%',:query, '%')")
