@@ -12,9 +12,9 @@ import delivery.management.model.dto.request.userRequest.changeUserPasswordReque
 import delivery.management.model.dto.response.othersResponse.AuthResponse;
 import delivery.management.model.dto.response.userResponse.UsersResponse;
 import delivery.management.model.entity.user.Users;
-import delivery.management.model.entity.user.UsersType;
+import delivery.management.model.entity.user.UserCategory;
 import delivery.management.repo.user.UsersRepository;
-import delivery.management.repo.user.UsersTypeRepository;
+import delivery.management.repo.user.UsersCategoryRepository;
 import delivery.management.services.others.FileStorageService;
 import delivery.management.services.others.JwtAuthenticationServiceImpl;
 import delivery.management.utills.EmailUtils;
@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UsersServiceImpl implements UsersService {
     private final UsersRepository usersRepository;
-    private final UsersTypeRepository usersTypeRepository;
+    private final UsersCategoryRepository usersCategoryRepository;
     private final EmailUtils emailUtils;
     private final JwtAuthenticationServiceImpl jwtAuthenticationService;
     private final JwtUtil jwtUtil;
@@ -114,7 +114,7 @@ public class UsersServiceImpl implements UsersService {
 
         validateDuplicationUsers(request.getEmail());
 
-        UsersType existingUsersType = usersTypeRepository.findByName(request.getAccountType())
+        UserCategory existingUserCategory = usersCategoryRepository.findByName(request.getUserCategory())
                 .orElseThrow(()->new RecordNotFoundException(MessageUtil.RECORD_NOT_FOUND));
 
             Users user = new Users();
@@ -128,8 +128,8 @@ public class UsersServiceImpl implements UsersService {
             user.setPassword(passwordEncoder.encode(request.getPassword()));
             user.setPhone(request.getPhone());
             user.setUsername(request.getUsername());
-            user.setUsersType(existingUsersType);
-            user.setUsersCategory(existingUsersType.getName());
+            user.setUserCategory(existingUserCategory);
+            user.setUsersCategory(existingUserCategory.getName());
             user.setRoles(UserConstant.DEFAULT_ROLE);//USER
 
             usersRepository.save(user);
@@ -235,56 +235,6 @@ public class UsersServiceImpl implements UsersService {
 
     }
 
-
-    /**
-     * @validating userOptional by uuid
-     * @Validate if the List of user is empty otherwise return record not found
-     * Create the user definition and update
-     * @return a Success Message
-     * * */
-//    @Override
-//    public ApiResponse<String> updateUsersByUsername(String username, UsersRequest request) {
-//
-//        Users user = validateUsersByUseraname(username);
-//
-//        if (request.getName() != null) {
-//            user.setName(request.getName());
-//        }
-//        if (request.getEmail() != null) {
-//            user.setEmail(request.getEmail());
-//        }
-//        if (request.getAddress() != null) {
-//            user.setAddress(request.getAddress());
-//        }
-//        if (request.getCountry() != null) {
-//            user.setCountry(request.getCountry());
-//        }
-//        if (request.getCity() != null) {
-//            user.setCity(request.getCity());
-//        }
-//        if (request.getGender() != null) {
-//            user.setGender(request.getGender());
-//        }
-//        if (request.getPhone() != null) {
-//            user.setPhone(request.getPhone());
-//        }
-//        if (request.getUsername() != null) {
-//            user.setUsername(request.getUsername());
-//        }
-//        if (request.getPhoto() != null) {
-//            user.setPhoto(request.getPhoto());
-//        }
-//        if (request.getDriverLicense() != null) {
-//            user.setDriverLicense(request.getDriverLicense());
-//        }
-//
-//
-//        usersRepository.save(user);
-//        return new ApiResponse<>(AppStatus.SUCCESS.label, "Record Updated Successfully");
-//
-//
-//    }
-//
 
 
     @Override

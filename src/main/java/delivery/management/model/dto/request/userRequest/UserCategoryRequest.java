@@ -3,10 +3,8 @@ package delivery.management.model.dto.request.userRequest;
 
 import lombok.Data;
 
-import java.util.UUID;
-
 @Data
-public class UserTypeRequest {
+public class UserCategoryRequest {
 
     private String name;
     private String description;

@@ -16,7 +16,7 @@ import delivery.management.model.entity.user.Users;
 import delivery.management.repo.transaction.DeliveryRepository;
 import delivery.management.repo.transaction.DispatchRepository;
 import delivery.management.repo.user.UsersRepository;
-import delivery.management.repo.user.UsersTypeRepository;
+import delivery.management.repo.user.UsersCategoryRepository;
 import delivery.management.utills.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +27,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +34,7 @@ public class DispatchServiceImpl implements DispatchService  {
 
     private final DispatchRepository dispatchRepository;
     private final UsersRepository usersRepository;
-    private final UsersTypeRepository usersTypeRepository;
+    private final UsersCategoryRepository usersCategoryRepository;
     private final DeliveryRepository deliveryRepository;
 
 

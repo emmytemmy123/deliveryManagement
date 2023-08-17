@@ -5,10 +5,10 @@ import delivery.management.model.entity.products.ProductItems;
 import delivery.management.model.entity.transaction.Delivery;
 import delivery.management.model.entity.transaction.DispatchDriver;
 import delivery.management.model.entity.transaction.Payment;
+import delivery.management.model.entity.user.UserCategory;
 import delivery.management.model.entity.user.Users;
 import delivery.management.model.entity.transportation.Vehicle;
 import delivery.management.model.entity.transportation.VehicleCategory;
-import delivery.management.model.entity.user.UsersType;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.PrePersist;
@@ -40,9 +40,9 @@ public class BaseListener {
             users.setUuid(UUID.randomUUID());
         }
 
-        else if(data instanceof UsersType){
-            UsersType usersType = (UsersType) data;
-            usersType.setUuid(UUID.randomUUID());
+        else if(data instanceof UserCategory){
+            UserCategory userCategory = (UserCategory) data;
+            userCategory.setUuid(UUID.randomUUID());
         }
 
         else if(data instanceof VehicleCategory){

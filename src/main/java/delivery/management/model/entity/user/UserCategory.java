@@ -7,21 +7,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @EntityListeners(BaseListener.class)
 @Entity
 @Table(name = "usersType")
-public class UsersType extends BaseEntity {
+public class UserCategory extends BaseEntity {
 
     private String name;
     private String description;
 
 
 
-    public UsersType(){
+    public UserCategory(){
 
     }
 

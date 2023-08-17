@@ -51,7 +51,7 @@ public class UsersRequest {
         @NotEmpty(message = MessageUtil.INVALID_PASSWORD)
         private String password;
 
-        private String accountType;
+        private String userCategory;
 
 
 

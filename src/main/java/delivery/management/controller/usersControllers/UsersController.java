@@ -3,9 +3,9 @@ package delivery.management.controller.usersControllers;
 import delivery.management.dto.ApiResponse;
 import delivery.management.model.dto.request.othersRequest.AuthRequest;
 import delivery.management.model.dto.request.userRequest.*;
-import delivery.management.model.dto.response.UserTypeResponse;
 import delivery.management.model.dto.response.othersResponse.AuthResponse;
-import delivery.management.services.user.UserTypeService;
+import delivery.management.model.dto.response.userResponse.UserCategoryResponse;
+import delivery.management.services.user.UserCategoryService;
 import delivery.management.services.user.UsersService;
 import io.swagger.annotations.ApiOperation;
 import delivery.management.model.dto.response.userResponse.UsersResponse;
@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import delivery.management.utills.EndpointParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
@@ -32,7 +31,7 @@ import static delivery.management.utills.EndpointParam.*;
 public class UsersController  {
 
     private final UsersService usersService;
-    private final UserTypeService userTypeService;
+    private final UserCategoryService userCategoryService;
 
 
 
@@ -49,10 +48,10 @@ public class UsersController  {
 
     @GetMapping(FIND_USERTYPE)
 //    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR')")
-    @ApiOperation(value = "Endpoint for retrieving lists of userType", response = UserTypeResponse.class, responseContainer = "List")
-    public delivery.management.dto.ApiResponse<List<UserTypeResponse>> getListOfUserType(@RequestParam(value= PAGE, defaultValue = PAGE_DEFAULT) int page,
-                                                                                         @RequestParam(value= SIZE,defaultValue= EndpointParam.SIZE_DEFAULT) int size) {
-        return userTypeService.getListOfUsersCategory(page,size);
+    @ApiOperation(value = "Endpoint for retrieving lists of userType", response = UserCategoryResponse.class, responseContainer = "List")
+    public ApiResponse<List<UserCategoryResponse>> getListOfUserType(@RequestParam(value= PAGE, defaultValue = PAGE_DEFAULT) int page,
+                                                                 @RequestParam(value= SIZE,defaultValue= SIZE_DEFAULT) int size) {
+        return userCategoryService.getListOfUsersCategory(page,size);
     }
 
 
@@ -70,9 +69,9 @@ public class UsersController  {
 
     @PostMapping(ADD_USERTYPE)
     @ApiOperation(value = "Endpoint for adding new userType to database", response = String.class)
-    public ApiResponse<String> addUserType(@Valid @RequestBody UserTypeRequest request) {
+    public ApiResponse<String> addUserType(@Valid @RequestBody UserCategoryRequest request) {
 
-        return userTypeService.addUsersCategory(request);
+        return userCategoryService.addUsersCategory(request);
     }
 
 
@@ -89,9 +88,9 @@ public class UsersController  {
 
     @GetMapping(FIND_USERTYPE_BY_ID)
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') ")
-    @ApiOperation(value = "Endpoint for fetching userType by id from database", response = UserTypeResponse.class)
-    public ApiResponse<UserTypeResponse> getUserTypeById(@PathVariable(value = "id") UUID userTypeId) {
-        return userTypeService.getUsersTypeById(userTypeId);
+    @ApiOperation(value = "Endpoint for fetching userType by id from database", response = UserCategoryResponse.class)
+    public ApiResponse<UserCategoryResponse> getUserTypeById(@PathVariable(value = "id") UUID userTypeId) {
+        return userCategoryService.getUsersTypeById(userTypeId);
     }
 
                                     //FIND USERTYPE BY NAME
@@ -104,11 +103,11 @@ public class UsersController  {
 
     @GetMapping(FIND_USERTYPE_BY_NAME)
 //    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') or hasAuthority('ROLE_USER') ")
-    @ApiOperation(value = "Endpoint for retrieving lists of usertype by Name", response = UserTypeResponse.class, responseContainer = "List")
-    public ApiResponse<UserTypeResponse> searchListOfUsersTypeByName(@RequestParam(value=PAGE, defaultValue = PAGE_DEFAULT) int page,
+    @ApiOperation(value = "Endpoint for retrieving lists of usertype by Name", response = UserCategoryResponse.class, responseContainer = "List")
+    public ApiResponse<UserCategoryResponse> searchListOfUsersTypeByName(@RequestParam(value=PAGE, defaultValue = PAGE_DEFAULT) int page,
                                                                                              @RequestParam(value=SIZE,defaultValue=SIZE_DEFAULT) int size,
                                                                                              @RequestParam String name ) {
-        return userTypeService.getUsersTypeByName(name);
+        return userCategoryService.getUsersTypeByName(name);
     }
 
 
@@ -143,8 +142,8 @@ public class UsersController  {
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MODERATOR') or hasAuthority('ROLE_USER') ")
     @ApiOperation(value = "Endpoint for updating userType by id from database", response = String.class)
     public ApiResponse<String> updateUserType(@PathVariable(value = "id") UUID userId,
-                                                                      @RequestBody UserTypeRequest request) {
-        return userTypeService.updateUsersCategory(userId, request);
+                                                                      @RequestBody UserCategoryRequest request) {
+        return userCategoryService.updateUsersCategory(userId, request);
     }
 
 
@@ -157,7 +156,7 @@ public class UsersController  {
     @PreAuthorize("hasAuthority('ROLE_ADMIN') ")
     @ApiOperation(value = "Endpoint for deleting userType by id from database", response = String.class)
     public delivery.management.dto.ApiResponse<String> deleteUserType(@PathVariable(value = "id") UUID user_id) {
-        return userTypeService.deleteUsersCategory(user_id);
+        return userCategoryService.deleteUsersCategory(user_id);
     }
 
 

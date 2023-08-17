@@ -24,7 +24,7 @@ public class Users extends BaseUser {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "usersTypeId", updatable = true)
-    private UsersType usersType;
+    private UserCategory userCategory;
 
     public Users(){
     }
