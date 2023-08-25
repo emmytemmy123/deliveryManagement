@@ -12,7 +12,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @EntityListeners(BaseListener.class)
 @Entity
-@Table(name = "usersType")
+@Table(name = "userCategory")
 public class UserCategory extends BaseEntity {
 
     private String name;

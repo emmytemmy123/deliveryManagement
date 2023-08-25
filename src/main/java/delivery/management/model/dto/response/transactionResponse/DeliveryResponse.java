@@ -1,10 +1,12 @@
 package delivery.management.model.dto.response.transactionResponse;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import delivery.management.model.dto.BaseDto;
 import delivery.management.model.dto.response.productsResponse.ProductResponse;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -23,6 +25,8 @@ public class DeliveryResponse extends BaseDto {
      private String postedBy;
      private String receiverName;
      private String receiverAddress;
+     @JsonFormat(pattern = "yyyy/MM/dd")
+     private Date dispatchDate;
 
 
 //     private DispatchResponse dispatchDriver;

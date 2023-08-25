@@ -116,6 +116,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         delivery.setUsers(existingUsers);
         delivery.setReceiverName(request.getReceiverName());
         delivery.setReceiverAddress(request.getReceiverAddress());
+        delivery.setDispatchDate(request.getDispatchDate());
 
         Double deliveryAmount = 0.0;
         Double totalDeliveryAmount = 0.0;
@@ -200,6 +201,7 @@ public class DeliveryServiceImpl implements DeliveryService {
         delivery.setTotalAmountDue(delivery.getTotalAmountDue());
         delivery.setPaymentMode(delivery.getPaymentMode());
         delivery.setTotalQuantity(delivery.getTotalQuantity());
+        delivery.setDispatchDate(delivery.getDispatchDate());
 
         deliveryRepository.save(delivery);
 
