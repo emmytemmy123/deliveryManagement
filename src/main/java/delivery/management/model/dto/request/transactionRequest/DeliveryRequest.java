@@ -7,6 +7,7 @@ import lombok.Data;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,6 +19,10 @@ public class DeliveryRequest {
         @NotNull(message = INVALID_NAME)
         @NotEmpty(message = INVALID_NAME)
         private String paymentMode;
+
+//        @NotNull(message = INVALID_NAME)
+//        @NotEmpty(message = INVALID_NAME)
+        private Date dispatchDate;
 
         @NotNull(message = INVALID_NAME)
         @NotEmpty(message = INVALID_NAME)

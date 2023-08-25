@@ -20,4 +20,6 @@ public interface UsersCategoryRepository extends JpaRepository <UserCategory, Lo
     Optional<UserCategory> findByName(String name);
 
 
+
+
 }

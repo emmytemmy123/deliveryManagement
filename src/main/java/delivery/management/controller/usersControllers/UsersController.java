@@ -59,7 +59,6 @@ public class UsersController  {
                                     //ADD_USERS
 
     @PostMapping(ADD_USERS)
-//    @PreAuthorize("hasAuthority('ROLE_ADMIN') ")
     @ApiOperation(value = "Endpoint for adding new user to database", response = String.class,
             produces = "application/json", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<String> addUsers(@Valid @RequestBody UsersRequest request) throws IOException {

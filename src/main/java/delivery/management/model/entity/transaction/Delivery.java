@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -31,6 +33,7 @@ public class Delivery extends BaseEntity {
     private String receiverName;
     private String receiverAddress;
     private String driverStatus;
+    private Date dispatchDate;
 
 
     @ManyToOne

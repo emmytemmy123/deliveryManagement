@@ -38,7 +38,6 @@ public class UsersRequest {
         @NotEmpty(message = MessageUtil.INVALID_PHONE)
         private String phone;
 
-
 //        @NotNull(message = MessageUtil.INVALID_PASSWORD)
 //        @NotEmpty(message = MessageUtil.INVALID_PASSWORD)
         private String driverLicense;
@@ -51,7 +50,10 @@ public class UsersRequest {
         @NotEmpty(message = MessageUtil.INVALID_PASSWORD)
         private String password;
 
+        @NotNull(message = MessageUtil.INVALID_PASSWORD)
+        @NotEmpty(message = MessageUtil.INVALID_PASSWORD)
         private String userCategory;
+
 
 
 
