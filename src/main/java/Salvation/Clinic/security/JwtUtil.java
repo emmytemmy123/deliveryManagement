@@ -51,7 +51,11 @@ public class JwtUtil {
                 .setClaims(claims)
                 .setSubject(userName)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
+<<<<<<< HEAD:src/main/java/Salvation/Clinic/security/JwtUtil.java
                 .setExpiration(new Date(System.currentTimeMillis()+100000*60*30))
+=======
+                .setExpiration(new Date(System.currentTimeMillis()+100000*60*60))
+>>>>>>> origin/master:src/main/java/delivery/management/utills/JwtUtil.java
                 .signWith(SignatureAlgorithm.HS256, secret).compact();
     }
 

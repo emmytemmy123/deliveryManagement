@@ -31,6 +31,7 @@ public class JwtAuthenticationServiceImpl implements JwtAuthenticationService{
 
     private final AuthenticationManager authenticationManager;
 
+<<<<<<< HEAD:src/main/java/Salvation/Clinic/services/Others/JwtAuthenticationServiceImpl.java
     private final UserRepo usersRepository;
 
     private final ActivityLogRepository activityLogRepository;
@@ -38,6 +39,13 @@ public class JwtAuthenticationServiceImpl implements JwtAuthenticationService{
     String username;
 
     String token;
+=======
+    private final UsersRepository usersRepository;
+
+     String username;
+
+     String token;
+>>>>>>> origin/master:src/main/java/delivery/management/services/others/JwtAuthenticationServiceImpl.java
 
 
     @Override
@@ -60,6 +68,7 @@ public class JwtAuthenticationServiceImpl implements JwtAuthenticationService{
         if (authentication.isAuthenticated() )
             token = jwtUtil.generateToken(authRequest.getUsername());
 
+<<<<<<< HEAD:src/main/java/Salvation/Clinic/services/Others/JwtAuthenticationServiceImpl.java
         ActivityLog activityLog = new ActivityLog();
         activityLog.setName("user login");
         activityLog.setCategory("login");
@@ -89,6 +98,27 @@ public class JwtAuthenticationServiceImpl implements JwtAuthenticationService{
 
         return ResponseEntity.ok(response);
 
+=======
+        GroupUserDetails userDetails = (GroupUserDetails) authentication.getPrincipal();
+
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("token", token);
+        response.put("username", userDetails.getUsername());
+        response.put("name", userDetails.getName());
+        response.put("email", userDetails.getEmail());
+        response.put("usersCategory", userDetails.getUsersCategory());
+        response.put("phone", userDetails.getPhone());
+        response.put("address", userDetails.getAddress());
+        response.put("city", userDetails.getCity());
+        response.put("gender", userDetails.getGender());
+        response.put("roles", userDetails.getRoles());
+        response.put("uuid", userDetails.getUuid());
+        response.put("photo", userDetails.getPhoto());
+
+
+        return ResponseEntity.ok(response);
+>>>>>>> origin/master:src/main/java/delivery/management/services/others/JwtAuthenticationServiceImpl.java
 
     }
 
@@ -105,7 +135,10 @@ public class JwtAuthenticationServiceImpl implements JwtAuthenticationService{
         return userOptional.get();
     }
 
+<<<<<<< HEAD:src/main/java/Salvation/Clinic/services/Others/JwtAuthenticationServiceImpl.java
 
+=======
+>>>>>>> origin/master:src/main/java/delivery/management/services/others/JwtAuthenticationServiceImpl.java
     @Override
     public String giveAccessToUser(UUID uuid, String userRole, Principal principal) {
 
@@ -125,7 +158,10 @@ public class JwtAuthenticationServiceImpl implements JwtAuthenticationService{
 
     }
 
+<<<<<<< HEAD:src/main/java/Salvation/Clinic/services/Others/JwtAuthenticationServiceImpl.java
 
+=======
+>>>>>>> origin/master:src/main/java/delivery/management/services/others/JwtAuthenticationServiceImpl.java
 
     private List<String> getRolesByLoggedInUser(Principal principal) {
 
@@ -141,7 +177,6 @@ public class JwtAuthenticationServiceImpl implements JwtAuthenticationService{
         }
         return Collections.emptyList();
     }
-
 
     private Users getNameOfLoggedInUser(Principal principal) {
         return usersRepository.findUsersByUsername(principal.getName()).get();

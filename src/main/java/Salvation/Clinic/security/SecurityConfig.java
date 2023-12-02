@@ -64,7 +64,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().disable();
         http.csrf().disable()
                 .authorizeRequests()
+<<<<<<< HEAD:src/main/java/Salvation/Clinic/security/SecurityConfig.java
                 .antMatchers( "/authenticate", "/users/add", "/users/type/add", "/forgotUserPassword", "/swagger-ui.html").permitAll()
+=======
+                .antMatchers( "/authenticates", "/authenticates/admin",
+                        "/users/add",  "/forgotUserPassword", "/swagger-ui.html").permitAll()
+>>>>>>> origin/master:src/main/java/delivery/management/config/SecurityConfig.java
                 .antMatchers("/v2/api-docs").permitAll()
                 .antMatchers("/swagger-resources/**").permitAll()
                 .antMatchers("/configuration/security").permitAll()

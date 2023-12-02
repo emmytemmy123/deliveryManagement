@@ -16,7 +16,7 @@ public interface UserRepo extends JpaRepository<Users, Long> {
     @Query("select u from Users u where u.email=:email")
     Optional<Users> findByEmailId(@Param("email") String email);
 
-    Users findByUsername(String username);
+   Users findByUsername(String username);
 
     Users findByEmail(String email);
 
@@ -26,7 +26,11 @@ public interface UserRepo extends JpaRepository<Users, Long> {
     @Query("select st from Users st where st.name=:name")
     Optional<Users> findUsersByName(@Param("name") String name);
 
+<<<<<<< HEAD:src/main/java/Salvation/Clinic/repo/userRepo/UserRepo.java
     //    @Query("select st from Users st where st.username=:username")
+=======
+//    @Query("select st from Users st where st.username=:username")
+>>>>>>> origin/master:src/main/java/delivery/management/repo/user/UsersRepository.java
     Optional<Users> findUsersByUsername( String username);
 
     Optional<Users> findUsersByEmail( String email);

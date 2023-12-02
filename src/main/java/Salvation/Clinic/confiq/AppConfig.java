@@ -32,7 +32,10 @@ public class AppConfig implements WebMvcConfigurer{
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 
+<<<<<<< HEAD:src/main/java/Salvation/Clinic/confiq/AppConfig.java
 
+=======
+>>>>>>> origin/master:src/main/java/delivery/management/config/AppConfig.java
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
@@ -40,12 +43,22 @@ public class AppConfig implements WebMvcConfigurer{
             @Override
             public void addCorsMappings(CorsRegistry registry) {
 
+<<<<<<< HEAD:src/main/java/Salvation/Clinic/confiq/AppConfig.java
                         registry.addMapping("/**")
+=======
+                         registry.addMapping("/**")
+>>>>>>> origin/master:src/main/java/delivery/management/config/AppConfig.java
                         .allowedOrigins("http://localhost:4200")
                         .allowedMethods("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH")
                         .allowedHeaders("Access-Control-Request-Method",
                                 "Access-Control-Request-Headers", "Authorization",
+<<<<<<< HEAD:src/main/java/Salvation/Clinic/confiq/AppConfig.java
                                 "Access-Control-Allow-Origin", "Cache-Control", "Content-Type");
+=======
+                                "Access-Control-Allow-Origin", "Cache-Control", "Content-Type")
+                                .allowCredentials(true);
+
+>>>>>>> origin/master:src/main/java/delivery/management/config/AppConfig.java
             }
         };
     }

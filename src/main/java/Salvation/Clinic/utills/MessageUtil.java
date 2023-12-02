@@ -13,14 +13,25 @@ public class MessageUtil {
     public final static String FILE_TOO_LARGE = "File is too large than expected size";
     public final static String PATIENT_NOT_FOUND = "Patient with specified constraint(s) not found";
     public final static String FAILED = "failed";
+<<<<<<< HEAD:src/main/java/Salvation/Clinic/utills/MessageUtil.java
     public final static String SERVER_ERROR_PRODUCT = "This order can't be made now";
     public final static String OUT_OF_STOCK = "The Product is Out Of Stock, Please Stock Immediately";
+=======
+    public final static String OUT_OF_STOCK = "The ProductItems is Out Of Stock, Please Stock Immediately";
+    public final static String INVALID_DELIVERY_NO = "The deliveryNo does not Exist";
+
+>>>>>>> origin/master:src/main/java/delivery/management/utills/MessageUtil.java
 
 
 
     //users messages
     public final static String INVALID_NAME = "Invalid name, value is required";
+<<<<<<< HEAD:src/main/java/Salvation/Clinic/utills/MessageUtil.java
     public final static String INVALID_CUSTOMER = "Unrecognized Customer, you are not a customer ";
+=======
+    public final static String INVALID_DRIVER = "Unrecognized Driver, you are not a driver";
+    public final static String INVALID_SENDER = "Unrecognized Sender, you are not a sender ";
+>>>>>>> origin/master:src/main/java/delivery/management/utills/MessageUtil.java
     public final static String INVALID_EMAIL = "Invalid email format, value is required";
     public final static String INVALID_PHONE = "Invalid phone format, value is required";
     public final static String INVALID_ADDRESS = "Invalid, field cant be empty, value is required";
